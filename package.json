@@ -18,6 +18,7 @@
   "author": "Ty Abonil",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "~0.7.9-1"
+    "bluebird": "~0.7.9-1",
+    "request": "~2.27.0"
   }
 }
