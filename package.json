@@ -1,8 +1,8 @@
 {
   "name": "request-promise",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Promise-based Wrapper for XHR using Request and Bluebird",
-  "main": "lib/tp.js",
+  "main": "./lib/rp.js",
   "scripts": {
     "test": "To Do"
   },
