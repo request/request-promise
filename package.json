@@ -15,6 +15,7 @@
     "promise",
     "request"
   ],
+  "readmeFilename": "README.md",
   "author": "Ty Abonil",
   "license": "MIT",
   "dependencies": {
