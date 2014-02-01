@@ -4,7 +4,7 @@
   "description": "Promise-based Wrapper for XHR using Request and Bluebird",
   "main": "./lib/rp.js",
   "scripts": {
-    "test": "To Do"
+    "test": "istanbul test _mocha --report html -- test/*-test*.js -R spec"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,11 @@
   "author": "Ty Abonil",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "~0.7.9-1",
-    "request": "~2.27.0"
+    "bluebird": "~1.0.1",
+    "request": "~2.33.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.1",
+    "istanbul": "~0.2.4"
   }
 }
