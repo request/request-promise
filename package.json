@@ -19,8 +19,8 @@
   "author": "Ty Abonil",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "~1.0.1",
-    "request": "~2.33.0"
+    "bluebird": "^1.2",
+    "request": "^2.34"
   },
   "devDependencies": {
     "mocha": "~1.17.1",
