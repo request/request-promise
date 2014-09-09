@@ -32,6 +32,24 @@ describe('request tests', function () {
             });
     });
 
+    it('should resolve for 201 status code', function (done) {
+        rp('http://localhost:4000/201')
+            .then(function(){
+                done();
+            }).catch(function(){
+                done(new Error('A 201 response should resolve, not reject'));
+            });
+    });
+
+    it('should resolve for 204 status code', function (done) {
+        rp('http://localhost:4000/204')
+            .then(function(){
+                done();
+            }).catch(function(){
+                done(new Error('A 204 response should resolve, not reject'));
+            });
+    });
+
     it('should reject for http errors', function(done){
         rp('http://localhost:1/200')
             .then(function(){
