@@ -66,7 +66,35 @@ describe('request tests', function () {
                 }).catch(function(){
                     done(new Error('A 500 response code should resolve, not reject'));
                 });
-        })
-    })
+        });
+    });
+
+    describe('HTTP methods', function(){
+        it('should support PATCH', function(done){
+            var options = {
+                url: 'http://localhost:4000/200',
+                method: 'PATCH'
+            };
+            rp(options)
+                .then(function(){
+                    done();
+                }).catch(function(){
+                    done(new Error('A 200 response code for a PATCH request should resolve, not reject'));
+                });
+        });
+
+        it('should support DELETE', function(done){
+            var options = {
+                url: 'http://localhost:4000/200',
+                method: 'DELETE'
+            };
+            rp(options)
+                .then(function(){
+                    done();
+                }).catch(function(){
+                    done(new Error('A 200 response code for a DELETE request should resolve, not reject'));
+                });
+        });
+    });
 
 });
