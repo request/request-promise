@@ -32,6 +32,24 @@ describe('request tests', function () {
             });
     });
 
+    it('should resolve for 201 status code', function (done) {
+        rp('http://localhost:4000/201')
+            .then(function(){
+                done();
+            }).catch(function(){
+                done(new Error('A 201 response should resolve, not reject'));
+            });
+    });
+
+    it('should resolve for 204 status code', function (done) {
+        rp('http://localhost:4000/204')
+            .then(function(){
+                done();
+            }).catch(function(){
+                done(new Error('A 204 response should resolve, not reject'));
+            });
+    });
+
     it('should reject for http errors', function(done){
         rp('http://localhost:1/200')
             .then(function(){
@@ -66,7 +84,35 @@ describe('request tests', function () {
                 }).catch(function(){
                     done(new Error('A 500 response code should resolve, not reject'));
                 });
-        })
-    })
+        });
+    });
+
+    describe('HTTP methods', function(){
+        it('should support PATCH', function(done){
+            var options = {
+                url: 'http://localhost:4000/200',
+                method: 'PATCH'
+            };
+            rp(options)
+                .then(function(){
+                    done();
+                }).catch(function(){
+                    done(new Error('A 200 response code for a PATCH request should resolve, not reject'));
+                });
+        });
+
+        it('should support DELETE', function(done){
+            var options = {
+                url: 'http://localhost:4000/200',
+                method: 'DELETE'
+            };
+            rp(options)
+                .then(function(){
+                    done();
+                }).catch(function(){
+                    done(new Error('A 200 response code for a DELETE request should resolve, not reject'));
+                });
+        });
+    });
 
 });
