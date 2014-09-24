@@ -2,6 +2,7 @@ var rp = require('../lib/rp.js');
 var http = require('http');
 var url = require('url');
 var assert = require('assert');
+var util = require('util');
 
 
 describe('request tests', function () {
@@ -14,7 +15,7 @@ describe('request tests', function () {
             var status = parseInt(path.split('/')[1]);
             if(isNaN(status)) status = 555;
             response.writeHead(status);
-            response.end();
+            response.end("Hello world!");
         });
         server.listen(4000);
     });
@@ -111,6 +112,33 @@ describe('request tests', function () {
                     done();
                 }).catch(function(){
                     done(new Error('A 200 response code for a DELETE request should resolve, not reject'));
+                });
+        });
+    });
+
+    describe('resolveWithFullResponse', function(){
+        it('should include the response', function(done){
+            var options = {
+                url: 'http://localhost:4000/200',
+                method: 'GET',
+                resolveWithFullResponse: true
+            };
+            rp(options)
+                .then(function(response){
+                    if (response.statusCode !== 200) {
+                        done(new Error(util.format("Expected response status %d, got %d", 200, response.statusCode)));
+                    }
+                    else if (response.request.method !== 'GET') {
+                        done(new Error(util.format("Expected method %s, got %s", 'GET', response.request.method))); 
+                    }
+                    else if (response.body !== 'Hello world!') {
+                        done(new Error(util.format("Expected body as '%s', got '%s'", "Hello world!", response.body)));
+                    }
+                    else {
+                        done();
+                    }
+                }).catch(function(err){
+                    done(new Error(err));
                 });
         });
     });

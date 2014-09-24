@@ -2,16 +2,21 @@
 
 A Promises/A XHR wrapper for Bluebird and Request
 
-[Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern.  This is a simple wrapper that takes in a request options object (or URI string), and returns a chainable promise.  By default, http response codes other than 200 and 201 will cause the promise to be rejected.  This can be over-ridden by setting `options.simple` to `false`.
+[Bluebird](https://github.com/petkaantonov/bluebird) and
+[Request](https://github.com/mikeal/request) are pretty awesome, but I found
+myself using the same design pattern.  This is a simple wrapper that takes in a
+request options object (or URI string), and returns a chainable promise.  By
+default, http response codes other than 2xx will cause the promise to
+be rejected.  This can be over-ridden by setting `options.simple` to `false`.
 
 Note: As of version 0.1, `reject` now passes  an object containing the following:
 ```js    
     reject({
-                    error: body,
-                    options: c,
-                    response: response,
-                    statusCode: response.statusCode
-                });
+      error: body,
+      options: c,
+      response: response,
+      statusCode: response.statusCode
+    });
 ```
 
 ## Installation
@@ -49,6 +54,18 @@ rp(options)
 //transform is called just before promise is fulfilled
 //displays length of response from server after post
 
+
+// get full response after DELETE
+options = {
+  method: 'DELETE',
+  uri: 'http://my-server/path/to/resource/1234',
+  resolveWithFullResponse: true
+};
+rp(options)
+  .then(function(response) {
+    console.log("DELETE succeeded with status %d", response.statusCode);
+  })
+  .catch(console.error);
 ```
 
 ## MIT Licenced
