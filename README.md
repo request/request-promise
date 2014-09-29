@@ -1,5 +1,7 @@
 # Request-Promise
 
+[![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
+
 A Promises/A XHR wrapper for Bluebird and Request
 
 [Bluebird](https://github.com/petkaantonov/bluebird) and
