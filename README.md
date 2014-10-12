@@ -70,4 +70,17 @@ rp(options)
   .catch(console.error);
 ```
 
+## Contributing
+
+To set up your development environment:
+
+1. clone the repo to your desktop,
+2. in the shell `cd` to the main folder,
+3. hit `npm install`, and
+4. run `gulp dev`.
+
+`gulp dev` watches all source files and if you save some changes it will lint the code and execute all tests. The test coverage report can be viewed from `./coverage/lcov-report/index.html`.
+
+If you want to debug a test you should use `gulp test-without-coverage` to run all tests without obscuring the code by the test coverage instrumentation.
+
 ## MIT Licenced

@@ -4,7 +4,7 @@
   "description": "Promise-based Wrapper for XHR using Request and Bluebird",
   "main": "./lib/rp.js",
   "scripts": {
-    "test": "istanbul test _mocha --report html -- test/*-test*.js -R spec"
+    "test": "./node_modules/.bin/gulp validate"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,13 @@
     "request": "^2.34"
   },
   "devDependencies": {
-    "mocha": "~1.17.1",
-    "istanbul": "~0.2.4"
+    "chalk": "^0.5.1",
+    "gulp": "^3.8.8",
+    "gulp-istanbul": "^0.3.1",
+    "gulp-jshint": "^1.8.5",
+    "gulp-mocha": "^1.1.1",
+    "jshint-stylish": "^1.0.0",
+    "rimraf": "^2.2.8",
+    "run-sequence": "^1.0.1"
   }
 }
