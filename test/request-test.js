@@ -62,6 +62,15 @@ describe('request tests', function () {
 
     describe('simple tests', function(){
 
+        it('should reject for 404 status code', function (done) {
+            rp('http://localhost:4000/404')
+                .then(function(){
+                    done(new Error('A 404 response code should reject, not resolve'));
+                }).catch(function(){
+                    done();
+                });
+        });
+
         it('should reject for 500 status code', function (done) {
             rp('http://localhost:4000/500')
                 .then(function(){
@@ -74,6 +83,20 @@ describe('request tests', function () {
     });
 
     describe('non-simple tests', function(){
+
+        it('should resolve for 404 status code', function(done){
+            var options = {
+                url: 'http://localhost:4000/404',
+                simple: false
+            };
+            rp(options)
+                .then(function(){
+                    done();
+                }).catch(function(){
+                    done(new Error('A 404 response code should resolve, not reject'));
+                });
+        });
+
         it('should resolve for 500 status code', function(done){
             var options = {
                 url: 'http://localhost:4000/500',
@@ -86,6 +109,7 @@ describe('request tests', function () {
                     done(new Error('A 500 response code should resolve, not reject'));
                 });
         });
+
     });
 
     describe('HTTP methods', function(){
