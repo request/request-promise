@@ -76,8 +76,9 @@ To set up your development environment:
 
 1. clone the repo to your desktop,
 2. in the shell `cd` to the main folder,
-3. hit `npm install`, and
-4. run `gulp dev`.
+3. hit `npm install`,
+4. hit `npm install gulp -g` if you haven't installed gulp globally yet, and
+5. run `gulp dev`. (Or run `node ./node_modules/.bin/gulp dev` if you don't want to install gulp globally.)
 
 `gulp dev` watches all source files and if you save some changes it will lint the code and execute all tests. The test coverage report can be viewed from `./coverage/lcov-report/index.html`.
 
