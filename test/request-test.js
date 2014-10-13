@@ -4,7 +4,6 @@ var url = require('url');
 var assert = require('assert');
 var util = require('util');
 
-
 describe('request tests', function () {
     var server;
 
@@ -82,6 +81,41 @@ describe('request tests', function () {
 
     });
 
+    describe('simple tests with changing options object', function(){
+
+
+        it('should reject for 500 status code', function (done) {
+            var options = {
+                uri : 'http://localhost:4000/500',
+                method : 'GET',
+                simple : true
+            };
+
+            rp('http://localhost:4000/500')
+                .then(function(){
+                    done(new Error('A 500 response code should reject, not resolve'));
+                }).catch(function(){
+                    done();
+                });
+        });
+
+        it('should resolve for 200 status code', function (done) {
+            var options = {
+                url : 'http://localhost:4000/200',
+                method : 'GET',
+                simple : true
+            };
+
+            rp(options)
+                .then(function(){
+                    done();
+                }).catch(function(){
+                    done(new Error('A 200 response should resolve, not reject'));
+                });
+        });
+
+    });
+
     describe('non-simple tests', function(){
 
         it('should resolve for 404 status code', function(done){
@@ -111,6 +145,7 @@ describe('request tests', function () {
         });
 
     });
+
 
     describe('HTTP methods', function(){
         it('should support PATCH', function(done){
