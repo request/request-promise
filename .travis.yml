@@ -1,4 +1,13 @@
 language: node_js
+
 node_js:
   - "0.10"
   - "0.11"
+
+env:
+  - V_REQUEST=2.34.0
+  - V_REQUEST=latest
+
+before_script:
+  - rm -rf ./node_modules/request/
+  - npm install request@$V_REQUEST
