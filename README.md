@@ -10,7 +10,7 @@ The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Blu
 
 Since version 0.3.0 Request-Promise is not a wrapper around Request anymore. It now adds a `then` method to Request and exports the original Request object. This means you can now use all features of Request.
 
-See the [migration instructions](#migrating-from-02x-to-03x) for important changes.
+See the [migration instructions](#migrating-from-02x-to-03x) for important changes. Issues and pull requests for 0.2.x are still welcome.
 
 ## Installation
 
@@ -84,7 +84,33 @@ The ways to debug the operation of Request-Promise are the same [as described](h
 
 ## Migrating from 0.2.x to 0.3.x
 
-Description forthcoming.
+The module was rewritten with great care accompanied by plenty of automated tests. In most cases you can just update Request-Promise and your code will continue to work.
+
+First and foremost Request-Promise now exposes Request directly. That means the API sticks to that of Request. The only methods and options introduced by Request-Promise are:
+
+- The `then` method
+- The `simple` option
+- The `resolveWithFullResponse` option
+- The `transform` option
+
+In regard to these methods and options Request-Promise 0.3.x is largely compatible with 0.2.x. All other parts of the API may differ in favor of the original behavior of Request.
+
+### Changes and Removed Quirks
+
+(`rp_02x` and `rp_03x` refer to the function exported by the respective version of Request-Promise.)
+
+- `rp_02x(...)` returned a Bluebird promise. `rp_03x(...)` returns a Request instance with a `then` method. If you used any Bluebird method other than `then` as the first method in the chain your code cannot use Request-Promise 0.3.x. Please note that this only applies to the **first** method in the chain. E.g. `rp_03x(...).then(...).catch(...)` is still possible. Only something like `rp_03x(...).catch(...)` is not possible. Please open an issue if you need support for e.g. `catch` as the first method in the chain.
+- The options `simple` and `resolveWithFullResponse` must be of type boolean. If they are of different type Request-Promise 0.3.x will use the defaults. In 0.2.x the behaviour for non-boolean values was different.
+- `rp_03x.head(...)` throws an exception if the options contain a request body. This is due to Requests original implementation which was not used in Request-Promise 0.2.x.
+- `rp_02x.request` does not exist in Request-Promise 0.3.x since Request is exported directly. (`rp_02x.request === rp_03x`)
+
+### Recommended Testing
+
+To ensure that nothing will break once you update Request-Promise is something close to impossible from our side. Therefore you must test responsibly. Here are some areas which we recommend you to test:
+
+- List forthcoming.
+- `rp.defaults`
+- `rp.<wrapMethods>` seems to be ok -> write tests
 
 ## Contributing
 
