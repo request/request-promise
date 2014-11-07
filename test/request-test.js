@@ -1,3 +1,5 @@
+'use strict';
+
 var rp = require('../lib/rp.js');
 var http = require('http');
 var url = require('url');
@@ -12,7 +14,7 @@ describe('request tests', function () {
         server = http.createServer(function(request, response){
             var path = url.parse(request.url).pathname;
             var status = parseInt(path.split('/')[1]);
-            if(isNaN(status)) status = 555;
+            if(isNaN(status)) { status = 555; }
             response.writeHead(status);
             response.end("Hello world!");
         });
@@ -21,7 +23,7 @@ describe('request tests', function () {
 
     after(function(){
         server.close();
-    })
+    });
 
     it('should resolve for 200 status code', function (done) {
         rp('http://localhost:4000/200')
@@ -53,11 +55,11 @@ describe('request tests', function () {
     it('should reject for http errors', function(done){
         rp('http://localhost:1/200')
             .then(function(){
-                done(new Error('A failed request should reject, not resolve'))
+                done(new Error('A failed request should reject, not resolve'));
             }).catch(function(){
                 done();
             });
-    })
+    });
 
     describe('simple tests', function(){
 
