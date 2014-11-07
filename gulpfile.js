@@ -9,6 +9,9 @@ var mocha = require('gulp-mocha');
 var chalk = require('chalk');
 var rimraf = require('rimraf');
 
+var chai = require("chai");
+global.expect = chai.expect;
+
 
 var paths = {
     libJsFiles: './lib/**/*.js',

@@ -3,7 +3,6 @@
 var rp = require('../lib/rp.js');
 var http = require('http');
 var url = require('url');
-var assert = require('assert');
 var util = require('util');
 
 describe('Request-Promise', function () {
@@ -67,14 +66,11 @@ describe('Request-Promise', function () {
             .then(function () {
                 done(new Error('A 500 response code should reject, not resolve'));
             }).catch(function (reason) {
-                if (reason.options.method !== 'GET') {
-                    done(new Error(util.format("Expected method %s, got %s", 'GET', reason.options.method)));
-                } else if (reason.error !== 'GET /500') {
-                    done(new Error(util.format("Expected body as '%s', got '%s'", "GET /500", reason.error)));
-                } else {
-                    done();
-                }
-            });
+                expect(reason.options.method).to.eql('GET');
+                expect(reason.error).to.eql('GET /500');
+                done();
+            })
+            .catch(done);
 
     });
 
@@ -204,21 +200,11 @@ describe('Request-Promise', function () {
             };
             rp(options)
                 .then(function(response){
-                    if (response.statusCode !== 200) {
-                        done(new Error(util.format("Expected response status %d, got %d", 200, response.statusCode)));
-                    }
-                    else if (response.request.method !== 'GET') {
-                        done(new Error(util.format("Expected method %s, got %s", 'GET', response.request.method))); 
-                    }
-                    else if (response.body !== 'GET /200') {
-                        done(new Error(util.format("Expected body as '%s', got '%s'", "GET /200", response.body)));
-                    }
-                    else {
-                        done();
-                    }
-                }).catch(function(err){
-                    done(new Error(err));
-                });
+                    expect(response.statusCode).to.eql(200);
+                    expect(response.request.method).to.eql('GET');
+                    expect(response.body).to.eql('GET /200');
+                    done();
+                }).catch(done);
         });
 
     });
