@@ -3,6 +3,9 @@
   "version": "0.2.3",
   "description": "Promise-based Wrapper for XHR using Request and Bluebird",
   "main": "./lib/rp.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
   "scripts": {
     "test": "./node_modules/.bin/gulp validate"
   },
