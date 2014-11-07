@@ -70,6 +70,14 @@ rp(options)
   .catch(console.error);
 ```
 
+## Debugging
+
+The ways to debug the operation of `request-promise` are the same [as described](https://github.com/request/request#debugging) for `request`. However, there are small differences:
+
+1. Launch the node process like `NODE_DEBUG=request node script.js` (`lib,request,otherlib` works too).
+2. Set `require('request-promise').request.debug = true` at any time (this does the same thing as #1).
+3. Use the [request-debug module](https://github.com/nylen/request-debug) to view request and response headers and bodies. Instrument `request-promise` with `require('request-debug')(rp.request);`.
+
 ## Contributing
 
 To set up your development environment:
