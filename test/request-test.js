@@ -6,7 +6,7 @@ var url = require('url');
 var assert = require('assert');
 var util = require('util');
 
-describe('request tests', function () {
+describe('Request-Promise', function () {
     var server;
 
     before(function(){
@@ -16,7 +16,7 @@ describe('request tests', function () {
             var status = parseInt(path.split('/')[1]);
             if(isNaN(status)) { status = 555; }
             response.writeHead(status);
-            response.end("Hello world!");
+            response.end(request.method + ' ' + request.url);
         });
         server.listen(4000);
     });
@@ -61,11 +61,28 @@ describe('request tests', function () {
             });
     });
 
+    it('should accept the method in wrong case', function (done) {
+
+        rp({ uri: 'http://localhost:4000/500', method: 'Get' })
+            .then(function () {
+                done(new Error('A 500 response code should reject, not resolve'));
+            }).catch(function (reason) {
+                if (reason.options.method !== 'GET') {
+                    done(new Error(util.format("Expected method %s, got %s", 'GET', reason.options.method)));
+                } else if (reason.error !== 'GET /500') {
+                    done(new Error(util.format("Expected body as '%s', got '%s'", "GET /500", reason.error)));
+                } else {
+                    done();
+                }
+            });
+
+    });
+
     describe('simple tests', function(){
 
         it('should reject for 404 status code', function (done) {
             rp('http://localhost:4000/404')
-                .then(function(){
+                .then(function () {
                     done(new Error('A 404 response code should reject, not resolve'));
                 }).catch(function(){
                     done();
@@ -88,7 +105,7 @@ describe('request tests', function () {
 
         it('should reject for 500 status code', function (done) {
             var options = {
-                uri : 'http://localhost:4000/500',
+                uri : 'http://localhost:4000/500', // UR - I -
                 method : 'GET',
                 simple : true
             };
@@ -103,7 +120,7 @@ describe('request tests', function () {
 
         it('should resolve for 200 status code', function (done) {
             var options = {
-                url : 'http://localhost:4000/200',
+                url : 'http://localhost:4000/200', // UR - L -
                 method : 'GET',
                 simple : true
             };
@@ -177,8 +194,9 @@ describe('request tests', function () {
         });
     });
 
-    describe('resolveWithFullResponse', function(){
-        it('should include the response', function(done){
+    describe('with option resolveWithFullResponse', function () {
+
+        it('should include the response', function (done) {
             var options = {
                 url: 'http://localhost:4000/200',
                 method: 'GET',
@@ -192,8 +210,8 @@ describe('request tests', function () {
                     else if (response.request.method !== 'GET') {
                         done(new Error(util.format("Expected method %s, got %s", 'GET', response.request.method))); 
                     }
-                    else if (response.body !== 'Hello world!') {
-                        done(new Error(util.format("Expected body as '%s', got '%s'", "Hello world!", response.body)));
+                    else if (response.body !== 'GET /200') {
+                        done(new Error(util.format("Expected body as '%s', got '%s'", "GET /200", response.body)));
                     }
                     else {
                         done();
@@ -202,6 +220,7 @@ describe('request tests', function () {
                     done(new Error(err));
                 });
         });
+
     });
 
 });
