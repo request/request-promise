@@ -1,3 +1,8 @@
+<a href="http://promisesaplus.com/">
+    <img src="https://promises-aplus.github.io/promises-spec/assets/logo-small.png"
+         align="right" valign="top" alt="Promises/A+ logo" />
+</a>
+
 # Request-Promise
 
 [![Build Status](https://travis-ci.org/tyabonil/request-promise.svg?branch=master)](https://travis-ci.org/tyabonil/request-promise) [![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
