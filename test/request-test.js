@@ -10,7 +10,7 @@ describe('Request-Promise', function () {
 
     var server, lastResponseBody;
 
-    before(function () {
+    before(function (done) {
         // This creates a local server to test for various status codes. A request to /404 returns a 404, etc
         server = http.createServer(function(request, response){
             var path = url.parse(request.url).pathname;
@@ -20,11 +20,16 @@ describe('Request-Promise', function () {
             lastResponseBody = request.method + ' ' + request.url;
             response.end(lastResponseBody);
         });
-        server.listen(4000);
+        server.listen(4000, function () {
+            done();
+        });
     });
 
-    after(function(){
-        server.close();
+    after(function () {
+        // Wait for all requests to finish since they may produce unhandled errors for tests at the end that don't wait themselves.
+        setTimeout(function () {
+            server.close();
+        }, 20);
     });
 
 
@@ -359,7 +364,7 @@ describe('Request-Promise', function () {
 
     });
 
-    describe('defaults', function () {});
+    describe('defaults', function () {}); // TODO
 
     describe('should still allow a callback', function () {
 
@@ -410,9 +415,7 @@ describe('Request-Promise', function () {
 
         it('but not allow the then method to be invoked more than once', function () {
             var req = rp('http://localhost:4000/200');
-            req.then(function () {}, function () {});
-            // FIXME: Using the following line instead of the previous one produces an error.
-//            req.then(function () {});
+            req.then();
             expect(function () { req.then(); }).to.throw('Request-Promise currently only allows to call the rp(...).then(...) method once. Please use chaining like rp(...).then(...).then(...) instead.');
         });
 
