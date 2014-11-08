@@ -453,11 +453,58 @@ describe('Request-Promise', function () {
 
     describe('should be Promises/A+ compliant', function () {
 
-        xit('and take only a fulfilled handler');
-        xit('and take only a rejected handler');
         xit('and allow calling then after the request already finished');
 
-        xit('by allowing chaining');
+        it('and take only a fulfilled handler', function (done) {
+
+            rp('http://localhost:4000/200')
+                .then(function () {
+                    done();
+                });
+
+        });
+
+        it('and take only a rejected handler', function (done) {
+
+            rp('http://localhost:4000/404')
+                .then(null, function () {
+                    done();
+                });
+
+        });
+
+        it('by allowing chaining another then', function (done) {
+
+            rp('http://localhost:4000/200')
+                .then(function () {
+                })
+                .then(function () {
+                    done();
+                });
+
+        });
+
+        it('by allowing chaining another then for rejection', function (done) {
+
+            rp('http://localhost:4000/404')
+                .then(function () {
+                })
+                .then(null, function () {
+                    done();
+                });
+
+        });
+
+        it('by allowing chaining a catch', function (done) {
+
+            rp('http://localhost:4000/404')
+                .then(function () {
+                })
+                .catch(function () {
+                    done();
+                });
+
+        });
 
         it('but not allow the then method to be invoked more than once', function () {
             var req = rp('http://localhost:4000/200');
