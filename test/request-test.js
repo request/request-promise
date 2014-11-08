@@ -289,6 +289,23 @@ describe('Request-Promise', function () {
 
         });
 
+        it('that returns a rejected promise', function () {
+
+            var options = {
+                url: 'http://localhost:4000/200',
+                transform: function (body) {
+                    return new Bluebird(function (resolve, reject) {
+                        setTimeout(function () {
+                            reject(new Error('Transform rejected!'));
+                        });
+                    });
+                }
+            };
+
+            return expect(rp(options)).to.be.rejected;
+
+        });
+
         it('that throws an exception', function () {
 
             var options = {
