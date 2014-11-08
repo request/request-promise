@@ -8,7 +8,7 @@ var Bluebird = require('bluebird');
 
 describe('Request-Promise', function () {
 
-    var server;
+    var server, lastResponseBody;
 
     before(function () {
         // This creates a local server to test for various status codes. A request to /404 returns a 404, etc
@@ -17,7 +17,8 @@ describe('Request-Promise', function () {
             var status = parseInt(path.split('/')[1]);
             if(isNaN(status)) { status = 555; }
             response.writeHead(status);
-            response.end(request.method + ' ' + request.url);
+            lastResponseBody = request.method + ' ' + request.url;
+            response.end(lastResponseBody);
         });
         server.listen(4000);
     });
@@ -360,7 +361,61 @@ describe('Request-Promise', function () {
 
     describe('defaults', function () {});
 
-    describe('with callback', function () {});
-    describe('inspect reject reason objects', function () {});
+    describe('should still allow a callback', function () {
+
+        it('without using the then method', function (done) {
+
+            rp('http://localhost:4000/200', function (err, httpResponse, body) {
+
+                try {
+
+                    if (err) { throw err; }
+                    expect(body).to.eql('GET /200');
+                    done();
+
+                } catch (e) {
+                    done(e);
+                }
+
+            });
+
+        });
+
+        xit('with using the then method at the same time');
+        xit('and still work if the callback throws an exception');
+
+        it('without using the then method and no callback provided', function (done) {
+
+            rp('http://localhost:4000/234'); // 234 is only used here.
+
+            setTimeout(function () {
+                if (lastResponseBody !== 'GET /234') {
+                    done (new Error('The server did not receive the request!'));
+                } else {
+                    done();
+                }
+            }, 20);
+
+        });
+
+    });
+
+    describe('should be Promises/A+ compliant', function () {
+
+        xit('and take only a fulfilled handler');
+        xit('and take only a rejected handler');
+        xit('and allow calling then after the request already finished');
+
+        xit('by allowing chaining');
+
+        it('but not allow the then method to be invoked more than once', function () {
+            var req = rp('http://localhost:4000/200');
+            req.then(function () {}, function () {});
+            // FIXME: Using the following line instead of the previous one produces an error.
+//            req.then(function () {});
+            expect(function () { req.then(); }).to.throw('Request-Promise currently only allows to call the rp(...).then(...) method once. Please use chaining like rp(...).then(...).then(...) instead.');
+        });
+
+    });
 
 });
