@@ -382,6 +382,7 @@ describe('Request-Promise', function () {
     });
 
     describe('defaults', function () {}); // TODO
+    describe('examples in readme', function () {}); // TODO
 
     describe('should still allow a callback', function () {
 
