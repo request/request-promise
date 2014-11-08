@@ -10,6 +10,7 @@ var chalk = require('chalk');
 var rimraf = require('rimraf');
 
 var chai = require("chai");
+chai.use(require("chai-as-promised"));
 global.expect = chai.expect;
 
 
