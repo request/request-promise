@@ -99,8 +99,16 @@ describe('Request-Promise', function () {
 
         });
 
-        xit('falling back to the default for a non-boolean options.simple');
-        xit('falling back to the default for a non-boolean options.resolveWithFullResponse');
+        it('falling back to the default for a non-boolean options.simple', function () {
+            return expect(rp({ url: 'http://localhost:4000/404', simple: 0 })).to.be.rejected;
+        });
+
+        it('falling back to the default for a non-boolean options.resolveWithFullResponse', function () {
+            return rp({ url: 'http://localhost:4000/200', resolveWithFullResponse: 1 })
+                .then(function (body) {
+                    expect(body).to.eql('GET /200');
+                });
+        });
 
         it('by not cross-polluting the options of later requests', function () {
 
@@ -130,7 +138,20 @@ describe('Request-Promise', function () {
 
         });
 
-        xit('by not cross-polluting the options of parallel requests');
+        it('by not cross-polluting the options of parallel requests', function () {
+
+            return Bluebird.all([
+                    rp({ uri: 'http://localhost:4000/200', simple: true }),
+                    rp({ url: 'http://localhost:4000/500', simple: false }),
+                    rp({ url: 'http://localhost:4000/201', resolveWithFullResponse: true })
+                ])
+                .then(function (results) {
+                    expect(results[0]).to.eql('GET /200');
+                    expect(results[1]).to.eql('GET /500');
+                    expect(results[2].body).to.eql('GET /201');
+                });
+
+        });
 
         it('resolveWithFullResponse = true', function () {
 
@@ -149,8 +170,94 @@ describe('Request-Promise', function () {
 
         });
 
-        xit('including a transform function');
-        xit('by ignoring options.transform if it is not a function');
+    });
+
+    describe('should apply a transform function', function () {
+
+        it('that processes the body', function () {
+
+            var options = {
+                url: 'http://localhost:4000/200',
+                transform: function (body) {
+                    return body.split('').reverse().join('');
+                }
+            };
+
+            return rp(options)
+                .then(function (transformedResponse) {
+                    expect(transformedResponse).to.eql('002/ TEG');
+                });
+
+        });
+
+        it('that processes the full response', function () {
+
+            var options = {
+                url: 'http://localhost:4000/200',
+                transform: function (body, httpResponse) {
+                    return httpResponse.body.split('').reverse().join('');
+                }
+            };
+
+            return rp(options)
+                .then(function (transformedResponse) {
+                    expect(transformedResponse).to.eql('002/ TEG');
+                });
+
+        });
+
+        it('that returns a promise', function () {
+
+            var options = {
+                url: 'http://localhost:4000/200',
+                transform: function (body) {
+                    return new Bluebird(function (resolve) {
+                        setTimeout(function () {
+                            resolve(body.split('').reverse().join(''));
+                        });
+                    });
+                }
+            };
+
+            return rp(options)
+                .then(function (transformedResponse) {
+                    expect(transformedResponse).to.eql('002/ TEG');
+                });
+
+        });
+
+        it('that throws an exception', function () {
+
+            var options = {
+                url: 'http://localhost:4000/200',
+                transform: function (body) {
+                    throw new Error('Transform failed!');
+                }
+            };
+
+            return rp(options)
+                .then(function (transformedResponse) {
+                    throw new Error('Request should not have been fulfilled!');
+                })
+                .catch(function (err) {
+                    expect(err.message).to.eql('Transform failed!');
+                });
+
+        });
+
+        it('not if options.transform is not a function', function () {
+
+            var options = {
+                url: 'http://localhost:4000/200',
+                transform: {}
+            };
+
+            return rp(options)
+                .then(function (transformedResponse) {
+                    expect(transformedResponse).to.eql('GET /200');
+                });
+
+        });
 
     });
 
@@ -160,8 +267,20 @@ describe('Request-Promise', function () {
             return expect(rp.get('http://localhost:4000/200')).to.eventually.eql('GET /200');
         });
 
-        xit('rp.head', function () {
-            return expect(rp.head('http://localhost:4000/200')).to.eventually.eql('HEAD /200');
+        it('rp.head', function () {
+
+            var options = {
+                url: 'http://localhost:4000/200',
+                resolveWithFullResponse: true
+            };
+
+            return rp.head(options)
+                .then(function (response) {
+                    expect(response.statusCode).to.eql(200);
+                    expect(response.request.method).to.eql('HEAD');
+                    expect(response.body).to.eql('');
+                });
+
         });
 
         it('rp.post', function () {
