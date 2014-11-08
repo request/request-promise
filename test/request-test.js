@@ -453,7 +453,17 @@ describe('Request-Promise', function () {
 
     describe('should be Promises/A+ compliant', function () {
 
-        xit('and allow calling then after the request already finished');
+        it('and allow calling then after the request already finished', function (done) {
+
+            var req = rp('http://localhost:4000/200');
+
+            setTimeout(function () {
+                req.then(function () {
+                    done();
+                });
+            }, 20);
+
+        });
 
         it('and take only a fulfilled handler', function (done) {
 
@@ -506,10 +516,23 @@ describe('Request-Promise', function () {
 
         });
 
-        it('but not allow the then method to be invoked more than once', function () {
+        it('and allow the then method to be invoked more than once', function (done) {
+
+            var countFulfillCalls = 0;
+
+            function onFulfilled() {
+                countFulfillCalls += 1;
+                if (countFulfillCalls === 3) {
+                    done();
+                }
+            }
+
             var req = rp('http://localhost:4000/200');
-            req.then(null, function () { /* A sporadic ECONNREFUSED shall not fail the test. */ });
-            expect(function () { req.then(); }).to.throw('Request-Promise currently only allows to call the rp(...).then(...) method once. Please use chaining like rp(...).then(...).then(...) instead.');
+
+            req.then(onFulfilled);
+            req.then(onFulfilled);
+            req.then(onFulfilled);
+
         });
 
     });
