@@ -386,8 +386,54 @@ describe('Request-Promise', function () {
 
         });
 
-        xit('with using the then method at the same time');
-        xit('and still work if the callback throws an exception');
+        it('with using the then method at the same time', function () {
+
+            var callOrder = 0;
+
+            return new Bluebird(function (resolve, reject) {
+
+                var callback = function (err, httpResponse, body) {
+
+                    try {
+                        if (err) { throw err; }
+                        expect(body).to.eql('GET /200');
+                        expect(callOrder).to.eql(0);
+                        callOrder += 1;
+                    } catch (e) {
+                        reject(e);
+                    }
+
+                };
+
+                rp('http://localhost:4000/200', callback)
+                    .then(function (body) {
+                        expect(body).to.eql('GET /200');
+                        expect(callOrder).to.eql(1);
+                        callOrder += 1;
+                        resolve();
+                    });
+
+            });
+
+        });
+
+        it('and still work if the callback throws an exception', function () {
+
+            return new Bluebird(function (resolve, reject) {
+
+                var callback = function (err, httpResponse, body) {
+                    throw new Error();
+                };
+
+                rp('http://localhost:4000/200', callback)
+                    .then(function (body) {
+                        expect(body).to.eql('GET /200');
+                        resolve();
+                    });
+
+            });
+
+        });
 
         it('without using the then method and no callback provided', function (done) {
 
@@ -415,7 +461,7 @@ describe('Request-Promise', function () {
 
         it('but not allow the then method to be invoked more than once', function () {
             var req = rp('http://localhost:4000/200');
-            req.then();
+            req.then(null, function () { /* A sporadic ECONNREFUSED shall not fail the test. */ });
             expect(function () { req.then(); }).to.throw('Request-Promise currently only allows to call the rp(...).then(...) method once. Please use chaining like rp(...).then(...).then(...) instead.');
         });
 
