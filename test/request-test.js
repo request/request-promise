@@ -435,21 +435,34 @@ describe('Request-Promise', function () {
 
         });
 
-        it('and still work if the callback throws an exception', function () {
+        it('and still work if the callback throws an exception', function (done) {
 
-            return new Bluebird(function (resolve, reject) {
+            var callback = function (err, httpResponse, body) {
+                throw new Error();
+            };
 
-                var callback = function (err, httpResponse, body) {
-                    throw new Error();
-                };
+            var originalErrorListeners = process.domain.listeners('error');
+            process.domain.removeAllListeners('error');
 
-                rp('http://localhost:4000/200', callback)
-                    .then(function (body) {
-                        expect(body).to.eql('GET /200');
-                        resolve();
-                    });
-
+            var errorCount = 0;
+            process.domain.on('error', function () {
+                errorCount += 1;
             });
+
+            rp('http://localhost:4000/200', callback)
+                .then(function (body) {
+
+                    process.domain.removeAllListeners('error');
+                    for ( var i = 0; i < originalErrorListeners.length; i+=1 ) {
+                        process.domain.on('error', originalErrorListeners[i]);
+                    }
+
+                    expect(errorCount).to.eql(1);
+                    expect(body).to.eql('GET /200');
+                    done();
+
+                })
+                .catch(done);
 
         });
 

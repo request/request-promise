@@ -60,8 +60,9 @@ gulp.task('test', ['clean'], function (done) {
 
             gulp.src(paths.specFiles)
                 .pipe(mocha())
-                .on('error', function () {
-                    console.log(chalk.bold.bgRed(' TESTS FAILED '));
+                .on('error', function (err) {
+                    console.error(String(err));
+                    console.error(chalk.bold.bgRed(' TESTS FAILED '));
                     done();
                 })
                 .pipe(istanbul.writeReports({
