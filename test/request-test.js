@@ -83,6 +83,63 @@ describe('Request-Promise', function () {
 
     });
 
+    describe('should provide a detailed reject reason', function () {
+
+        it('when erroring out', function (done) {
+
+            var expectedOptions = {
+                uri: 'http://localhost:1/200',
+                simple: true,
+                resolveWithFullResponse: false,
+                tunnel: false,
+                callback: undefined
+            };
+
+            rp('http://localhost:1/200')
+                .then(function () {
+                    done(new Error('Request should have errored out!'));
+                })
+                .catch(function (reason) {
+                    expect(reason).to.be.an('object');
+                    expect(reason.error.message).to.eql('connect ECONNREFUSED');
+                    expect(reason.options).to.eql(expectedOptions);
+                    expect(reason.response).to.eql(undefined);
+                    expect(reason.statusCode).to.eql(undefined);
+                    done();
+                })
+                .catch(done);
+
+        });
+
+        it('when getting a non-success status code', function (done) {
+
+            var expectedOptions = {
+                uri: 'http://localhost:4000/404',
+                simple: true,
+                resolveWithFullResponse: false,
+                tunnel: false,
+                callback: undefined
+            };
+
+            rp('http://localhost:4000/404')
+                .then(function () {
+                    done(new Error('Request should have errored out!'));
+                })
+                .catch(function (reason) {
+                    expect(reason).to.be.an('object');
+                    expect(reason.error).to.eql('GET /404');
+                    expect(reason.options).to.eql(expectedOptions);
+                    expect(reason.response).to.be.an('object');
+                    expect(reason.response.body).to.eql('GET /404');
+                    expect(reason.statusCode).to.eql(404);
+                    done();
+                })
+                .catch(done);
+
+        });
+
+    });
+
     describe('should process the options', function () {
 
         it('by correcting options.method with wrong case', function (done) {
