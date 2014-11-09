@@ -568,4 +568,14 @@ describe('Request-Promise', function () {
 
     });
 
+    describe("should not alter Request's original behavior", function () {
+
+        it('like emitting errors with no listener', function () {
+            expect(function () {
+                rp({});
+            }).to.throw();
+        });
+
+    });
+
 });
