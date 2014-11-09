@@ -576,6 +576,12 @@ describe('Request-Promise', function () {
             }).to.throw();
         });
 
+        it('like emitting errors to the callback', function (done) {
+            rp({}, function (err) {
+                if (err) { done(); }
+            });
+        });
+
     });
 
 });
