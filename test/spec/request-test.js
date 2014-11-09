@@ -390,7 +390,6 @@ describe('Request-Promise', function () {
     });
 
     describe('defaults', function () {}); // TODO
-    describe('examples in readme', function () {}); // TODO
 
     describe('should still allow a callback', function () {
 
@@ -636,6 +635,83 @@ describe('Request-Promise', function () {
                 expect(stdout).to.contain('request1: true, rp: true, request2: true');
                 done();
             });
+
+        });
+
+    });
+
+    describe('should run the examples', function () {
+
+        it('in the README', function () {
+
+            var options;
+
+            return Bluebird.resolve()
+                .then(function () {
+
+                    return rp('http://www.google.com')
+                        .then(function (body) {
+                            expect(body).to.contain('</html>');
+                        })
+                        .catch(function (err) {
+                            throw err;
+                        });
+
+                    // --> 'GET's and displays google.com
+
+                })
+                .then(function () {
+
+                    options = {
+                        uri : 'http://localhost:4000/200',
+                        method : 'POST'
+                    };
+
+                    return rp(options)
+                        .then(function (body) {
+                            expect(body).to.eql('POST /200');
+                        })
+                        .catch(function (err) {
+                            throw err;
+                        });
+
+                    // --> Displays response from server after post
+
+                })
+                .then(function () {
+
+                    options.transform = function (data) { return data.length; };
+
+                    return rp(options)
+                        .then(function (body) {
+                            expect(body).to.eql('POST /200'.length);
+                        })
+                        .catch(function (err) {
+                            throw err;
+                        });
+
+                    // transform is called just before promise is fulfilled
+                    // --> Displays length of response from server after post
+
+                })
+                .then(function () {
+
+                    // Get full response after DELETE
+                    options = {
+                        method: 'DELETE',
+                        uri: 'http://localhost:4000/200',
+                        resolveWithFullResponse: true
+                    };
+
+                    return rp(options)
+                        .then(function (response) {
+                            expect(response.statusCode).to.eql(200);
+                        })
+                        .catch(function (err) {
+                            throw err;
+                        });
+
+                });
 
         });
 
