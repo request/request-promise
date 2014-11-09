@@ -582,6 +582,15 @@ describe('Request-Promise', function () {
             });
         });
 
+        it('like registering to the emitted complete event', function (done) {
+            rp('http://localhost:4000/200')
+                .on('complete', function (httpResponse, body) {
+                    expect(httpResponse.statusCode).to.eql(200);
+                    expect(body).to.eql('GET /200');
+                    done();
+                });
+        });
+
     });
 
 });
