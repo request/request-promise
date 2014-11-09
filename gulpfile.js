@@ -9,11 +9,16 @@ var mocha = require('gulp-mocha');
 var chalk = require('chalk');
 var rimraf = require('rimraf');
 
+var chai = require("chai");
+chai.use(require("chai-as-promised"));
+global.expect = chai.expect;
+
 
 var paths = {
     libJsFiles: './lib/**/*.js',
     gulpfile: './gulpfile.js',
-    specFiles: './test/**/*.js'
+    specFiles: './test/spec/**/*.js',
+    fixtureFiles: './test/fixtures/**/*.js'
 };
 
 
@@ -24,7 +29,8 @@ gulp.task('watch', function () {
     return gulp.watch([
         paths.libJsFiles,
         paths.gulpfile,
-        paths.specFiles
+        paths.specFiles,
+        paths.fixtureFiles
     ], [
         'validate'
     ]);
@@ -37,7 +43,7 @@ gulp.task('validate', function (done) {
 
 gulp.task('lint', function () {
 
-    return gulp.src([paths.libJsFiles, paths.gulpfile, paths.specFiles])
+    return gulp.src([paths.libJsFiles, paths.gulpfile, paths.specFiles, paths.fixtureFiles])
         .pipe(jshint())
         .pipe(jshint.reporter(jshintStylish))
         .pipe(jshint.reporter('fail'));
@@ -56,8 +62,9 @@ gulp.task('test', ['clean'], function (done) {
 
             gulp.src(paths.specFiles)
                 .pipe(mocha())
-                .on('error', function () {
-                    console.log(chalk.bold.bgRed(' TESTS FAILED '));
+                .on('error', function (err) {
+                    console.error(String(err));
+                    console.error(chalk.bold.bgRed(' TESTS FAILED '));
                     done();
                 })
                 .pipe(istanbul.writeReports({
