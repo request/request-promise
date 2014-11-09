@@ -16,9 +16,15 @@ describe('Request-Promise', function () {
             var path = url.parse(request.url).pathname;
             var status = parseInt(path.split('/')[1]);
             if(isNaN(status)) { status = 555; }
-            response.writeHead(status);
-            lastResponseBody = request.method + ' ' + request.url;
-            response.end(lastResponseBody);
+            if (status === 302) {
+                response.writeHead(status, { location: '/200' });
+                lastResponseBody = '';
+                response.end();
+            } else {
+                response.writeHead(status);
+                lastResponseBody = request.method + ' ' + request.url;
+                response.end(lastResponseBody);
+            }
         });
         server.listen(4000, function () {
             done();
@@ -570,25 +576,34 @@ describe('Request-Promise', function () {
 
     describe("should not alter Request's original behavior", function () {
 
-        it('like emitting errors with no listener', function () {
+        it('for emitting errors with no listener', function () {
             expect(function () {
                 rp({});
             }).to.throw();
         });
 
-        it('like emitting errors to the callback', function (done) {
+        it('for emitting errors to the callback', function (done) {
             rp({}, function (err) {
                 if (err) { done(); }
             });
         });
 
-        it('like registering to the emitted complete event', function (done) {
+        it('for registering to the emitted complete event', function (done) {
             rp('http://localhost:4000/200')
                 .on('complete', function (httpResponse, body) {
                     expect(httpResponse.statusCode).to.eql(200);
                     expect(body).to.eql('GET /200');
                     done();
                 });
+        });
+
+        it('for requests with a redirect', function () {
+
+            return rp('http://localhost:4000/302')
+                .then(function (body) {
+                    expect(body).to.eql('GET /200');
+                });
+
         });
 
     });
