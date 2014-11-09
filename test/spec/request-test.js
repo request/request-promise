@@ -389,7 +389,66 @@ describe('Request-Promise', function () {
 
     });
 
-    describe('defaults', function () {}); // TODO
+    describe('should cover the defaults mechanism', function () {
+
+        it("for overwriting the simple property's default", function () {
+
+            var nonSimpleRP = rp.defaults({ simple: false });
+
+            return expect(nonSimpleRP('http://localhost:4000/404')).to.be.fulfilled;
+
+        });
+
+        it("for overwriting the resolveWithFullResponse property's default", function () {
+
+            var rpWithFullResp = rp.defaults({ resolveWithFullResponse: true });
+
+            return rpWithFullResp('http://localhost:4000/200')
+                .then(function (response) {
+                    expect(response.statusCode).to.eql(200);
+                });
+
+        });
+
+        it('for cascading overwrites', function () {
+
+            var nonSimpleRP = rp.defaults({ simple: false });
+            var nonSimpleRPWithFullResp = nonSimpleRP.defaults({ resolveWithFullResponse: true });
+
+            return nonSimpleRPWithFullResp('http://localhost:4000/404')
+                .then(function (response) {
+                    expect(response.statusCode).to.eql(404);
+                });
+
+        });
+
+        it('and not interfere with the original Request-Promise instance', function () {
+
+            var rpWithFullResp = rp.defaults({ resolveWithFullResponse: true });
+
+            return Bluebird.all([
+                    rpWithFullResp('http://localhost:4000/200'),
+                    rp('http://localhost:4000/200')
+                ])
+                .then(function (results) {
+                    expect(results[0].statusCode).to.eql(200);
+                    expect(results[1]).to.eql('GET /200');
+                });
+
+        });
+
+        it('for setting the transform property', function () {
+
+            var rpWithTransform = rp.defaults({ transform: function (body) { return body.split('/'); }});
+
+            return rpWithTransform('http://localhost:4000/200')
+                .then(function (body) {
+                    expect(body).to.eql(['GET ', '200']);
+                });
+
+        });
+
+    });
 
     describe('should still allow a callback', function () {
 
