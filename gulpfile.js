@@ -17,7 +17,8 @@ global.expect = chai.expect;
 var paths = {
     libJsFiles: './lib/**/*.js',
     gulpfile: './gulpfile.js',
-    specFiles: './test/**/*.js'
+    specFiles: './test/spec/**/*.js',
+    fixtureFiles: './test/fixtures/**/*.js'
 };
 
 
@@ -28,7 +29,8 @@ gulp.task('watch', function () {
     return gulp.watch([
         paths.libJsFiles,
         paths.gulpfile,
-        paths.specFiles
+        paths.specFiles,
+        paths.fixtureFiles
     ], [
         'validate'
     ]);
@@ -41,7 +43,7 @@ gulp.task('validate', function (done) {
 
 gulp.task('lint', function () {
 
-    return gulp.src([paths.libJsFiles, paths.gulpfile, paths.specFiles])
+    return gulp.src([paths.libJsFiles, paths.gulpfile, paths.specFiles, paths.fixtureFiles])
         .pipe(jshint())
         .pipe(jshint.reporter(jshintStylish))
         .pipe(jshint.reporter('fail'));

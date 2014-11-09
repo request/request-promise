@@ -1,6 +1,6 @@
 'use strict';
 
-var rp = require('../lib/rp.js');
+var rp = require('../../lib/rp.js');
 var http = require('http');
 var url = require('url');
 var Bluebird = require('bluebird');
