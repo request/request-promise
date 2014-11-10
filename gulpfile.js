@@ -18,7 +18,8 @@ var paths = {
     libJsFiles: './lib/**/*.js',
     gulpfile: './gulpfile.js',
     specFiles: './test/spec/**/*.js',
-    fixtureFiles: './test/fixtures/**/*.js'
+    fixtureFiles: './test/fixtures/**/*.js',
+    jshintrc: './.jshintrc'
 };
 
 
@@ -30,7 +31,8 @@ gulp.task('watch', function () {
         paths.libJsFiles,
         paths.gulpfile,
         paths.specFiles,
-        paths.fixtureFiles
+        paths.fixtureFiles,
+        paths.jshintrc
     ], [
         'validate'
     ]);
