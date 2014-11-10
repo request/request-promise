@@ -34,12 +34,12 @@
     "request": "^2.34"
   },
   "devDependencies": {
-    "chai": "^1.9.2",
+    "chai": "^1.10.0",
     "chai-as-promised": "^4.1.1",
     "chalk": "^0.5.1",
-    "gulp": "^3.8.8",
+    "gulp": "^3.8.10",
     "gulp-istanbul": "^0.3.1",
-    "gulp-jshint": "^1.8.5",
+    "gulp-jshint": "^1.9.0",
     "gulp-mocha": "^1.1.1",
     "jshint-stylish": "^1.0.0",
     "rimraf": "^2.2.8",
