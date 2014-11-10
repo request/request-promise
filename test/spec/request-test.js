@@ -263,8 +263,8 @@ describe('Request-Promise', function () {
 
             var options = {
                 url: 'http://localhost:4000/200',
-                transform: function (body) {
-                    return body.split('').reverse().join('');
+                transform: function (body, httpResponse) {
+                    return httpResponse.body.split('').reverse().join('');
                 }
             };
 
