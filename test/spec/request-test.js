@@ -312,8 +312,7 @@ describe('Request-Promise', function () {
 
         });
 
-        // FIXME
-        xit('that throws an exception', function () {
+        it('that throws an exception', function () {
 
             var options = {
                 url: 'http://localhost:4000/200',
