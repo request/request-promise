@@ -393,8 +393,7 @@ describe('Request-Promise', function () {
 
     describe('should cover the defaults mechanism', function () {
 
-        // FIXME: Simple default sticks to true
-        xit("for overwriting the simple property's default", function () {
+        it("for overwriting the simple property's default", function () {
 
             var nonSimpleRP = rp.defaults({ simple: false });
 
@@ -413,7 +412,6 @@ describe('Request-Promise', function () {
 
         });
 
-        // FIXME: Simple default sticks to true
         xit('for cascading overwrites', function () {
 
             var nonSimpleRP = rp.defaults({ simple: false });
