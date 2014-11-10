@@ -9,7 +9,7 @@ env:
   - V_REQUEST=latest V_BLUEBIRD=latest
 
 before_script:
-  - rm -rf ./node_modules/request/
-  - rm -rf ./node_modules/bluebird/
+  - npm uninstall request
+  - npm uninstall bluebird
   - npm install request@$V_REQUEST
-  - npm install request@$V_BLUEBIRD
+  - npm install bluebird@$V_BLUEBIRD
