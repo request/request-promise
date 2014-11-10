@@ -634,6 +634,92 @@ describe('Request-Promise', function () {
 
     });
 
+    describe('should handle possibly unhandled rejections', function () {
+
+        var origStderrWrite, stderr;
+
+        beforeEach(function () {
+            origStderrWrite = process.stderr.write;
+            stderr = [];
+            process.stderr.write = function(string, encoding, fd) {
+                stderr.push(string);
+            };
+        });
+
+        afterEach(function () {
+            process.stderr.write = origStderrWrite;
+        });
+
+        it('by muting them if .then(...) was not called yet', function (done) {
+
+            rp('http://localhost:1/200', function (err) {
+                if (!err) {
+                    done(new Error('The request should fail.'));
+                    return;
+                }
+                setTimeout(function () {
+                    if (stderr.length > 0) {
+                        done(new Error('Observed unexpected output to stderr.'));
+                    } else {
+                        done();
+                    }
+                });
+            });
+
+        });
+
+        it('by printing them if .then(...) was called without a rejection handler', function (done) {
+
+            rp('http://localhost:1/200', function (err) {
+                if (!err) {
+                    done(new Error('The request should fail.'));
+                    return;
+                }
+                setTimeout(function () {
+                    if (stderr.length === 0) {
+                        done(new Error('Observed no output to stderr.'));
+                    } else {
+                        done();
+                    }
+                });
+            }).then(function () {}, null); // No rejection handler
+
+        });
+
+        it('but not printing them if .then(...) was called with a rejection handler', function (done) {
+
+            rp('http://localhost:1/200', function (err) {
+                if (!err) {
+                    done(new Error('The request should fail.'));
+                    return;
+                }
+                setTimeout(function () {
+                    if (stderr.length > 0) {
+                        done(new Error('Observed unexpected output to stderr.'));
+                    } else {
+                        done();
+                    }
+                });
+            }).then(function () {}, function () {});
+
+        });
+
+        it('and not interfere with Bluebird required by the user', function (done) {
+
+            Bluebird.reject(new Error());
+
+            setTimeout(function () {
+                if (stderr.length === 0) {
+                    done(new Error('Observed no output to stderr.'));
+                } else {
+                    done();
+                }
+            });
+
+        });
+
+    });
+
     describe("should not alter Request's original behavior", function () {
 
         it('for emitting errors with no listener', function () {
