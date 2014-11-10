@@ -634,6 +634,31 @@ describe('Request-Promise', function () {
 
     });
 
+    describe('should expose additional Bluebird methods', function () {
+
+        it('.catch(Function handler)', function (done) {
+
+            rp('http://localhost:4000/404')
+                .catch(function (reason) {
+                    done();
+                });
+
+        });
+
+        it('.catch([Function ErrorClass|Function predicate...], Function handler)', function (done) {
+
+            rp({ uri: 'http://localhost:4000/200', transform: function () { throw new Error('Transform failed.'); } })
+                .catch(Error, function (err) {
+                    done();
+                })
+                .catch(function (reason) {
+                    done(new Error('Expected rejection reason to be an Error object.'));
+                });
+
+        });
+
+    });
+
     describe('should handle possibly unhandled rejections', function () {
 
         var origStderrWrite, stderr;
