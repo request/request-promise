@@ -5,7 +5,7 @@
 
 # Request-Promise
 
-[![Build Status](https://travis-ci.org/tyabonil/request-promise.svg?branch=master)](https://travis-ci.org/tyabonil/request-promise) [![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
+[![Build Status](https://travis-ci.org/tyabonil/request-promise.svg?branch=master)](https://travis-ci.org/tyabonil/request-promise) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](#can-i-trust-this-module) [![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
 
@@ -77,9 +77,200 @@ rp(options)
     .catch(console.error);
 ```
 
-## API in detail
+## API in Detail
 
-Description forthcoming.
+Consider Request-Promise being:
+
+- A Request object
+	- With an [identical API](https://github.com/request/request): `require('request-promise') == require('request')` so to say
+- Plus some methods on a request call object:
+	- `rp(...).then(...)` or e.g. `rp.post(...).then(...)` which turn `rp(...)` and `rp.post(...)` into promises
+	- `rp(...).catch(...)` or e.g. `rp.del(...).catch(...)` which is the same method as provided by Bluebird promises
+- Plus some additional options:
+	- `simple` which is a boolean to set whether status codes other than 2xx should also reject the promise
+	- `resolveWithFullResponse` which is a boolean to set whether the promise should be resolve with the full response or just the response body
+	- `transform` which takes a function to transform the response into a custom value with which the promise is resolved
+
+The objects returned by request calls like `rp(...)` or e.g. `rp.post(...)` are regular Promises/A+ compliant promises and can be assimilated by any compatible promise library. However, the methods `.then(...)` and `.catch(...)` - which you can call on the request call objects - return a full-fledged Bluebird promise. That means you have the full [Bluebird API](https://github.com/petkaantonov/bluebird/blob/master/API.md) available for further chaining. E.g.: `rp(...).then(...).finally(...)`
+
+### .then(onFulfilled, onRejected)
+
+``` js
+// As a Request user you would write:
+var request = require('request');
+
+request('http://google.com', function (err, response, body) {
+    if (err) {
+        handleError({ error: err, response: response, ... });
+    } else if (!(/^2/.test('' + response.statusCode))) { // Status Codes other than 2xx
+        handleError({ error: body, response: response, ... });
+    } else {
+        process(body);
+    }
+});
+
+// As a Request-Promise user you can now write the equivalent code:
+var rp = require('request-promise');
+
+rp('http://google.com')
+    .then(process, handleError);
+```
+
+``` js
+// The same is available for all http method shortcuts:
+request.post('http://example.com/api', function (err, response, body) { ... });
+rp.post('http://example.com/api').then(...);
+```
+
+### .catch(onRejected)
+
+``` js
+rp('http://google.com')
+    .catch(handleError);
+
+// ... is syntactical sugar for:
+
+rp('http://google.com')
+    .then(null, handleError);
+
+
+// By the way, this:
+rp('http://google.com')
+    .then(process)
+    .catch(handleError);
+
+// ... is equivalent to:
+rp('http://google.com')
+    .then(process, handleError);
+```
+
+### Fulfilled promises and the `resolveWithFullResponse` option
+
+``` js
+// Per default the body is passed to the fulfillment handler:
+rp('http://google.com')
+    .then(function (body) {
+        // Process the html of the Google web page...
+    });
+
+// The resolveWithFullResponse options allows to pass the full response:
+rp({ uri: 'http://google.com', resolveWithFullResponse: true })
+    .then(function (response) {
+        // Access response.statusCode, response.body etc.
+    });
+
+```
+
+### Rejected promises and the `simple` option
+
+``` js
+// The rejection handler is called with a reason object...
+rp('http://google.com')
+    .catch(function (reason) {
+        // Handle failed request...
+	});
+
+// ... and would be equivalent to this Request-only implementation:
+var options = { uri: 'http://google.com' };
+
+request(options, function (err, response, body) {
+    var reason;
+    if (err) {
+        reason = {
+            error: err,
+            options: options,
+            response: response
+        };
+	} else if (!(/^2/.test('' + response.statusCode))) { // Status Codes other than 2xx
+        reason = {
+            error: body,
+            options: options,
+            response: response,
+            statusCode: response.statusCode
+        };
+    }
+
+    if (reason) {
+        // Handle failed request...
+    }
+});
+
+
+// If you pass the simple option as false...
+rp({ uri: 'http://google.com', simple: false })
+    .catch(function (reason) {
+        // Handle failed request...
+	});
+
+// ... the equivalent Request-only code would be:
+request(options, function (err, response, body) {
+    if (err) {
+        var reason = {
+            error: err,
+            options: options,
+            response: response
+        };
+        // Handle failed request...
+	}
+});
+// E.g. a 404 would now fulfill the promise.
+// Combine it with resolveWithFullResponse = true to check the status code in the fulfillment handler.
+```
+
+### The `transform` function
+
+You can pass a function to `options.transform` to generate a custom fulfillment value when the promise gets resolved.
+
+``` js
+// Just for fun you could reverse the response body:
+var options = {
+	uri: 'http://google.com',
+    transform: function (body, response) {
+        return body.split('').reverse().join('');
+    }
+};
+
+rp(options)
+    .then(function (reversedBody) {
+        // #@-?
+    });
+
+
+// However, you could also do something useful:
+var $ = require('cheerio'); // Basically jQuery for node.js
+
+function autoParse(body, response) {
+    // FIXME: The content type string could contain additional values like the charset.
+    if (response.headers['content-type'] === 'application/json') {
+        return JSON.parse(body);
+    } else if (response.headers['content-type'] === 'text/html') {
+        return $.load(body);
+    } else {
+        return body;
+    }
+}
+
+options.transform = autoParse;
+
+rp(options)
+    .then(function (autoParsedBody) {
+        // :)
+    });
+
+
+// You can go one step further and set the transform as the default:
+var rpap = rp.defaults({ transform: autoParse });
+
+rpap('http://google.com')
+    .then(function (autoParsedBody) {
+        // :)
+    });
+
+rpap('http://echojs.com')
+    .then(function (autoParsedBody) {
+        // =)
+    });
+```
 
 ## Debugging
 
@@ -96,6 +287,7 @@ The module was rewritten with great care accompanied by plenty of automated test
 First and foremost Request-Promise now exposes Request directly. That means the API sticks to that of Request. The only methods and options introduced by Request-Promise are:
 
 - The `then` method
+- The `catch` method
 - The `simple` option
 - The `resolveWithFullResponse` option
 - The `transform` option
@@ -106,25 +298,18 @@ In regard to these methods and options Request-Promise 0.3.x is largely compatib
 
 (`rp_02x` and `rp_03x` refer to the function exported by the respective version of Request-Promise.)
 
-- `rp_02x(...)` returned a Bluebird promise. `rp_03x(...)` returns a Request instance with a `then` method. If you used any Bluebird method other than `then` as the first method in the chain, your code cannot use Request-Promise 0.3.x. Please note that this only applies to the **first** method in the chain. E.g. `rp_03x(...).then(...).catch(...)` is still possible. Only something like `rp_03x(...).catch(...)` is not possible. Please open an issue if you need support for e.g. `catch` as the first method in the chain.
-- The options `simple` and `resolveWithFullResponse` must be of type boolean. If they are of different type Request-Promise 0.3.x will use the defaults. In 0.2.x the behaviour for non-boolean values was different.
-- If you called `rp_02x(...)` without appending a `.then(...)` call occuring errors were discarded. Request-Promise 0.3.x may now throw those. However, if you append a `.then(...)` call those errors reject the promise in both versions.
+- `rp_02x(...)` returned a Bluebird promise. `rp_03x(...)` returns a Request instance with a `then` and a `catch` method. If you used any Bluebird method other than `then` and `catch` as the first method in the chain, your code cannot use Request-Promise 0.3.x right away. Please note that this only applies to the **FIRST method in the chain**. E.g. `rp_03x(...).then(...).finally(...)` is still possible. Only something like `rp_03x(...).finally(...)` is not possible. Please open an issue if you need support for e.g. `finally` as the first method in the chain.
+- The options `simple` and `resolveWithFullResponse` must be of type boolean. If they are of different type Request-Promise 0.3.x will use the defaults. In 0.2.x the behavior for non-boolean values was different.
+- The object passed as the reason of a rejected promise contains an `options` object that differs between both versions. Especially the `method` property is not set if the default (GET) is applied.
+- If you called `rp_02x(...)` without appending a `.then(...)` call occurring errors may have been discarded. Request-Promise 0.3.x may now throw those. However, if you append a `.then(...)` call those errors reject the promise in both versions.
 - `rp_03x.head(...)` throws an exception if the options contain a request body. This is due to Requests original implementation which was not used in Request-Promise 0.2.x.
 - `rp_02x.request` does not exist in Request-Promise 0.3.x since Request is exported directly. (`rp_02x.request === rp_03x`)
 
-
-### Recommended Testing
-
-To ensure that nothing will break once you update Request-Promise is something close to impossible from our side. Therefore you must test responsibly. Here are some areas which we recommend you to test:
-
-- List forthcoming.
-- `rp.defaults`
-- `rp.<wrapMethods>` seems to be ok -> write tests
-- The object passed as the reason of a rejected promise contains an options object...
-
 ## Can I trust this module?
 
-Arguments forthcoming.
+The 145 lines of code are covered by 919 lines of test code producing a test coverage of 100% and beyond. Additionally, the original tests of Request were executed on Request-Promise to ensure that we can call it "a drop-in replacement for Request". So yes, we did our best to make Request-Promise live up to the quality Request is known for.
+
+However, there is one important design detail: Request-Promise passes a callback to each Request call which it uses to resolve or reject the promise. The callback is also registered if you don't use the promise features in a certain request. E.g. you may only use streaming: `rp(...).pipe(...)` As a result, [additional code](https://github.com/request/request/blob/master/request.js#L1266) is executed that buffers the streamed data and passes it as the response body to the "complete" event. If you stream large quantities of data the buffer grows big and that has an impact on your memory footprint. In these cases you can just `var request = require('request');` and use `request` for streaming large quantities of data.
 
 ## Contributing
 
@@ -152,7 +337,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 - v0.2.6 (2014-11-09)
 	- When calling `rp.defaults(...)` the passed `resolveWithFullResponse` option is not always overwritten by the default anymore.
 	- The function passed as the `transform` option now also gets the full response as the second parameter. The new signature is: `function (body, response) { }`
-	- If the transform function throws an exception it is catched and the promise is rejected with it.
+	- If the transform function throws an exception it is caught and the promise is rejected with it.
 - v0.2.5 (2014-11-06)
 	- The Request instance which is wrapped by Request-Promise is exposed as `rp.request`.
 
