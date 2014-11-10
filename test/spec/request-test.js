@@ -23,7 +23,7 @@ describe('Request-Promise', function () {
                 lastResponseBody = '';
                 response.end();
             } else {
-                response.writeHead(status);
+                response.writeHead(status, { 'Content-Type': 'text/plain' });
                 lastResponseBody = request.method + ' ' + request.url;
                 response.end(lastResponseBody);
             }
