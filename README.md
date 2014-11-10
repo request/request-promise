@@ -9,7 +9,7 @@
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
 
-[Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a `then` method to the Request object which returns a Bluebird promise for chainability. By default, http response codes other than 2xx will cause the promise to be rejected. This can be over-ridden by setting `options.simple` to `false`.
+[Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a `then` method to the Request object which returns a Bluebird promise for chainability. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
 
 ## Request-Promise is a drop-in replacement for Request
 
@@ -28,6 +28,8 @@ npm install request-promise
 ```
 
 Request-Promise depends on loosely defined versions of Request and Bluebird. If you want to use specific versions of those modules please install them beforehand.
+
+Node.js version 0.10 and up is supported.
 
 ## Examples
 
@@ -104,10 +106,12 @@ In regard to these methods and options Request-Promise 0.3.x is largely compatib
 
 (`rp_02x` and `rp_03x` refer to the function exported by the respective version of Request-Promise.)
 
-- `rp_02x(...)` returned a Bluebird promise. `rp_03x(...)` returns a Request instance with a `then` method. If you used any Bluebird method other than `then` as the first method in the chain your code cannot use Request-Promise 0.3.x. Please note that this only applies to the **first** method in the chain. E.g. `rp_03x(...).then(...).catch(...)` is still possible. Only something like `rp_03x(...).catch(...)` is not possible. Please open an issue if you need support for e.g. `catch` as the first method in the chain.
+- `rp_02x(...)` returned a Bluebird promise. `rp_03x(...)` returns a Request instance with a `then` method. If you used any Bluebird method other than `then` as the first method in the chain, your code cannot use Request-Promise 0.3.x. Please note that this only applies to the **first** method in the chain. E.g. `rp_03x(...).then(...).catch(...)` is still possible. Only something like `rp_03x(...).catch(...)` is not possible. Please open an issue if you need support for e.g. `catch` as the first method in the chain.
 - The options `simple` and `resolveWithFullResponse` must be of type boolean. If they are of different type Request-Promise 0.3.x will use the defaults. In 0.2.x the behaviour for non-boolean values was different.
+- If you called `rp_02x(...)` without appending a `.then(...)` call occuring errors were discarded. Request-Promise 0.3.x may now throw those. However, if you append a `.then(...)` call those errors reject the promise in both versions.
 - `rp_03x.head(...)` throws an exception if the options contain a request body. This is due to Requests original implementation which was not used in Request-Promise 0.2.x.
 - `rp_02x.request` does not exist in Request-Promise 0.3.x since Request is exported directly. (`rp_02x.request === rp_03x`)
+
 
 ### Recommended Testing
 
@@ -116,6 +120,8 @@ To ensure that nothing will break once you update Request-Promise is something c
 - List forthcoming.
 - `rp.defaults`
 - `rp.<wrapMethods>` seems to be ok -> write tests
+- The object passed as the reason of a rejected promise contains an options object...
+
 
 ## Contributing
 
@@ -133,8 +139,19 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+### Main Branch
+
 - v0.3.0 (forthcoming)
 	- Carefully rewritten from scratch to make Request-Promise a [drop-in replacement for Request](#request-promise-is-a-drop-in-replacement-for-request)
+
+### Version 0.2.x Branch
+
+- v0.2.6 (2014-11-09)
+	- When calling `rp.defaults(...)` the passed `resolveWithFullResponse` option is not always overwritten by the default anymore.
+	- The function passed as the `transform` option now also gets the full response as the second parameter. The new signature is: `function (body, response) { }`
+	- If the transform function throws an exception it is catched and the promise is rejected with it.
+- v0.2.5 (2014-11-06)
+	- The Request instance which is wrapped by Request-Promise is exposed as `rp.request`.
 
 ## MIT Licensed
 
