@@ -122,6 +122,9 @@ To ensure that nothing will break once you update Request-Promise is something c
 - `rp.<wrapMethods>` seems to be ok -> write tests
 - The object passed as the reason of a rejected promise contains an options object...
 
+## Can I trust this module?
+
+Arguments forthcoming.
 
 ## Contributing
 
@@ -141,7 +144,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
-- v0.3.0 (forthcoming)
+- v0.3.0 (2014-11-10)
 	- Carefully rewritten from scratch to make Request-Promise a [drop-in replacement for Request](#request-promise-is-a-drop-in-replacement-for-request)
 
 ### Version 0.2.x Branch
