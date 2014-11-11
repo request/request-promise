@@ -9,11 +9,11 @@
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
 
-[Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a `then` method to the Request object which returns a Bluebird promise for chainability. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
+[Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
 
 ## Request-Promise is a drop-in replacement for Request
 
-Since version 0.3.0 Request-Promise is not a wrapper around Request anymore. It now adds a `then` method to Request and exports the original Request object. This means you can now use all features of Request.
+Since version 0.3.0 Request-Promise is not a wrapper around Request anymore. It now adds a `.then(...)` method to the Request prototype and exports the original Request object. This means you can now use all features of Request.
 
 Request-Promise is perfect for replacing callbacks with promises. However, if you want to pipe large amounts of data we recommend using Request for the reason [described below](#can-i-trust-this-module). Both Request and Request-Promise can be required side by side.
 
@@ -88,12 +88,13 @@ Consider Request-Promise being:
 - Plus some methods on a request call object:
 	- `rp(...).then(...)` or e.g. `rp.post(...).then(...)` which turn `rp(...)` and `rp.post(...)` into promises
 	- `rp(...).catch(...)` or e.g. `rp.del(...).catch(...)` which is the same method as provided by Bluebird promises
+	- `rp(...).promise()` or e.g. `rp.head(...).promise()` which returns the underlying promise so you can access the full [Bluebird API](https://github.com/petkaantonov/bluebird/blob/master/API.md)
 - Plus some additional options:
 	- `simple` which is a boolean to set whether status codes other than 2xx should also reject the promise
 	- `resolveWithFullResponse` which is a boolean to set whether the promise should be resolve with the full response or just the response body
 	- `transform` which takes a function to transform the response into a custom value with which the promise is resolved
 
-The objects returned by request calls like `rp(...)` or e.g. `rp.post(...)` are regular Promises/A+ compliant promises and can be assimilated by any compatible promise library. However, the methods `.then(...)` and `.catch(...)` - which you can call on the request call objects - return a full-fledged Bluebird promise. That means you have the full [Bluebird API](https://github.com/petkaantonov/bluebird/blob/master/API.md) available for further chaining. E.g.: `rp(...).then(...).finally(...)`
+The objects returned by request calls like `rp(...)` or e.g. `rp.post(...)` are regular Promises/A+ compliant promises and can be assimilated by any compatible promise library. However, the methods `.then(...)` and `.catch(...)` - which you can call on the request call objects - return a full-fledged Bluebird promise. That means you have the full [Bluebird API](https://github.com/petkaantonov/bluebird/blob/master/API.md) available for further chaining. E.g.: `rp(...).then(...).finally(...)` If, however, you need a method other than `.then(...)` or `.catch(...)` to be **FIRST** in the chain, use `.promise()`: `rp(...).promise().bind(...).then(...)`
 
 ### .then(onFulfilled, onRejected)
 
@@ -144,6 +145,26 @@ rp('http://google.com')
 // ... is equivalent to:
 rp('http://google.com')
     .then(process, handleError);
+```
+
+### .promise() - For advanced use cases
+
+In order to not pollute the Request call objects with the methods of the underlying Bluebird promise, only `.then(...)` and `.catch(...)` were exposed to cover most use cases. The effect is that any methods of a Bluebird promise other than `.then(...)` and `.catch(...)` cannot be used as the **FIRST** method in the promise chain:
+
+``` js
+// This works:
+rp('http://google.com').then(function () { ... });
+rp('http://google.com').catch(function () { ... });
+
+// This works as well since additional methods are only used AFTER the FIRST call in the chain:
+rp('http://google.com').then(function () { ... }).finally(function () { ... });
+rp('http://google.com').then(function () { ... }).spread(function () { ... });
+rp('http://google.com').catch(function () { ... }).error(function () { ... });
+
+// This does not work:
+// rp('http://google.com').bind(this).then(function () { ... });
+// Use .promise() in these cases:
+rp('http://google.com').promise().bind(this).then(function () { ... });
 ```
 
 ### Fulfilled promises and the `resolveWithFullResponse` option
@@ -288,8 +309,9 @@ The module was rewritten with great care accompanied by plenty of automated test
 
 First and foremost Request-Promise now exposes Request directly. That means the API sticks to that of Request. The only methods and options introduced by Request-Promise are:
 
-- The `then` method
-- The `catch` method
+- The `.then(...)` method
+- The `.catch(...)` method
+- The `.promise()` method
 - The `simple` option
 - The `resolveWithFullResponse` option
 - The `transform` option
@@ -300,7 +322,9 @@ In regard to these methods and options Request-Promise 0.3.x is largely compatib
 
 (`rp_02x` and `rp_03x` refer to the function exported by the respective version of Request-Promise.)
 
-- `rp_02x(...)` returned a Bluebird promise. `rp_03x(...)` returns a Request instance with a `then` and a `catch` method. If you used any Bluebird method other than `then` and `catch` as the first method in the chain, your code cannot use Request-Promise 0.3.x right away. Please note that this only applies to the **FIRST method in the chain**. E.g. `rp_03x(...).then(...).finally(...)` is still possible. Only something like `rp_03x(...).finally(...)` is not possible. Please open an issue if you need support for e.g. `finally` as the first method in the chain.
+- `rp_02x(...)` returned a Bluebird promise. `rp_03x(...)` returns a Request instance with a `.then(...)` and a `.catch(...)` method. If you used any Bluebird method other than `.then(...)` and `.catch(...)` as the **FIRST** method in the chain, your code needs a small change to use Request-Promise 0.3.1 and up: Use the [`.promise()` method](#promise---for-advanced-use-cases) to retrieve the full-fledged Bluebird promise. E.g. `rp_02x(...).bind(...)` needs to be changed to `rp_03x(...).promise().bind(...)`
+  Please note that this only applies to the **FIRST method in the chain**. E.g. `rp_03x(...).then(...).finally(...)` is still possible. Only something like `rp_02x(...).finally(...)` needs to be changed to `rp_03x(...).promise().finally(...)`.
+  If, however, you have a large code base in production and making this small change is not an option or you think that exposing another Bluebird method directly on the Request instance would be more convenient for a common use case, please open an issue.
 - The options `simple` and `resolveWithFullResponse` must be of type boolean. If they are of different type Request-Promise 0.3.x will use the defaults. In 0.2.x the behavior for non-boolean values was different.
 - The object passed as the reason of a rejected promise contains an `options` object that differs between both versions. Especially the `method` property is not set if the default (GET) is applied.
 - If you called `rp_02x(...)` without appending a `.then(...)` call occurring errors may have been discarded. Request-Promise 0.3.x may now throw those. However, if you append a `.then(...)` call those errors reject the promise in both versions.
@@ -331,6 +355,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
+- v0.3.1 (2014-11-11)
+	- Added the `.promise()` method for advanced Bluebird API usage
+	  *Thanks to @devo-tox for his feedback in [issue #27](https://github.com/tyabonil/request-promise/issues/27)*
 - v0.3.0 (2014-11-10)
 	- Carefully rewritten from scratch to make Request-Promise a [drop-in replacement for Request](#request-promise-is-a-drop-in-replacement-for-request)
 
@@ -339,9 +366,11 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 - v0.2.6 (2014-11-09)
 	- When calling `rp.defaults(...)` the passed `resolveWithFullResponse` option is not always overwritten by the default anymore.
 	- The function passed as the `transform` option now also gets the full response as the second parameter. The new signature is: `function (body, response) { }`
+	  *Thanks to @khankuan for his feedback in [issue #24](https://github.com/tyabonil/request-promise/issues/24)*
 	- If the transform function throws an exception it is caught and the promise is rejected with it.
 - v0.2.5 (2014-11-06)
 	- The Request instance which is wrapped by Request-Promise is exposed as `rp.request`.
+	  *Thanks to @hjpbarcelos for his feedback in [issue #23](https://github.com/tyabonil/request-promise/issues/23)*
 
 ## MIT Licensed
 
