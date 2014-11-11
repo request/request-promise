@@ -15,7 +15,9 @@ The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Blu
 
 Since version 0.3.0 Request-Promise is not a wrapper around Request anymore. It now adds a `then` method to Request and exports the original Request object. This means you can now use all features of Request.
 
-See the [migration instructions](#migrating-from-02x-to-03x) for important changes. Issues and pull requests for 0.2.x are still welcome.
+Request-Promise is perfect for replacing callbacks with promises. However, if you want to pipe large amounts of data we recommend using Request for the reason [described below](#can-i-trust-this-module). Both Request and Request-Promise can be required side by side.
+
+See the [migration instructions](#migrating-from-02x-to-03x) for important changes between 0.2.x and 0.3.x. Issues and pull requests for 0.2.x are still welcome.
 
 ## Installation
 
