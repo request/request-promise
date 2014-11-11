@@ -657,6 +657,18 @@ describe('Request-Promise', function () {
 
         });
 
+        it('.promise() to return the Bluebird promise itself', function () {
+
+            var context = { message: 'Hello World!'};
+
+            return rp('http://localhost:4000/200').promise().bind(context)
+                .then(function (body) {
+                    expect(body).to.eql('GET /200');
+                    expect(this).to.eql(context);
+                });
+
+        });
+
     });
 
     describe('should handle possibly unhandled rejections', function () {
@@ -711,6 +723,24 @@ describe('Request-Promise', function () {
 
         });
 
+        it('and also printing them if .promise() was called without any further chaining', function (done) {
+
+            rp('http://localhost:1/200', function (err) {
+                if (!err) {
+                    done(new Error('The request should fail.'));
+                    return;
+                }
+                setTimeout(function () {
+                    if (stderr.length === 0) {
+                        done(new Error('Observed no output to stderr.'));
+                    } else {
+                        done();
+                    }
+                });
+            }).promise(); // No further chaining
+
+        });
+
         it('but not printing them if .then(...) was called with a rejection handler', function (done) {
 
             rp('http://localhost:1/200', function (err) {
@@ -726,6 +756,42 @@ describe('Request-Promise', function () {
                     }
                 });
             }).then(function () {}, function () {});
+
+        });
+
+        it('and also not printing them if just .catch(...) was called with a rejection handler', function (done) {
+
+            rp('http://localhost:1/200', function (err) {
+                if (!err) {
+                    done(new Error('The request should fail.'));
+                    return;
+                }
+                setTimeout(function () {
+                    if (stderr.length > 0) {
+                        done(new Error('Observed unexpected output to stderr.'));
+                    } else {
+                        done();
+                    }
+                });
+            }).catch(function () {});
+
+        });
+
+        it('and also not printing them if .promise() was called with a rejection handler given the chain further down', function (done) {
+
+            rp('http://localhost:1/200', function (err) {
+                if (!err) {
+                    done(new Error('The request should fail.'));
+                    return;
+                }
+                setTimeout(function () {
+                    if (stderr.length > 0) {
+                        done(new Error('Observed unexpected output to stderr.'));
+                    } else {
+                        done();
+                    }
+                });
+            }).promise().catch(function () {});
 
         });
 
