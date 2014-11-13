@@ -13,11 +13,11 @@
   // with different skill levels.
 
   "bitwise"       : true,     // Prohibit bitwise operators (&, |, ^, etc.).
-  "curly"         : false,     // Require {} for every new block or scope.
+  "curly"         : true,     // Require {} for every new block or scope.
   "eqeqeq"        : true,     // Require triple equals i.e. `===`.
   "forin"         : true,     // Tolerate `for in` loops without `hasOwnPrototype`.
   "immed"         : true,     // Require immediate invocations to be wrapped in parens e.g. `( function(){}() );`
-  "latedef"       : false,     // Prohibit variable use before definition.
+  "latedef"       : true,     // Prohibit variable use before definition.
   "newcap"        : true,     // Require capitalization of all constructor functions e.g. `new F()`.
   "noarg"         : true,     // Prohibit use of `arguments.caller` and `arguments.callee`.
   "noempty"       : true,     // Prohibit use of empty blocks.
@@ -25,7 +25,7 @@
   "plusplus"      : true,     // Prohibit use of `++` & `--`.
   "regexp"        : true,     // Prohibit `.` and `[^...]` in regular expressions.
   "undef"         : true,     // Require all non-global variables be declared before they are used.
-  "strict"        : false,     // Require `use strict` pragma in every file.
+  "strict"        : true,     // Require `use strict` pragma in every file.
   "trailing"      : true,     // Prohibit trailing whitespaces.
 
   // == Relaxing Options ================================================
@@ -35,7 +35,7 @@
   // them only if you are absolutely positive that you know what you are
   // doing.
 
-  "asi"           : true,    // Tolerate Automatic Semicolon Insertion (no semicolons).
+  "asi"           : false,    // Tolerate Automatic Semicolon Insertion (no semicolons).
   "boss"          : false,    // Tolerate assignments inside if, for & while. Usually conditions & loops are for comparison, not assignments.
   "debug"         : false,    // Allow debugger statements e.g. browser breakpoints.
   "eqnull"        : false,    // Tolerate use of `== null`.
@@ -80,13 +80,17 @@
   "rhino"         : false,    // Enable globals available when your code is running inside of the Rhino runtime environment.
   "wsh"           : false,    // Enable globals available when your code is running as a script for the Windows Script Host.
 
-  // Additional globals introduced by Mocha
+  // Additional globals introduced by Mocha and Chai
   "globals": {
     "describe"    : false,
+    "xdescribe"   : false,
     "it"          : false,
+    "xit"         : false,
     "before"      : false,
+    "beforeEach"  : false,
     "after"       : false,
-    "Promise"     : true      // See: https://github.com/jshint/jshint/issues/1747
+    "afterEach"   : false,
+    "expect"      : false
   },
 
   // == JSLint Legacy ===================================================

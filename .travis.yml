@@ -1,5 +1,15 @@
 language: node_js
+
 node_js:
-  - "0.8"
   - "0.10"
   - "0.11"
+
+env:
+  - V_REQUEST=2.34.0 V_BLUEBIRD=2.3.0
+  - V_REQUEST=latest V_BLUEBIRD=latest
+
+before_script:
+  - npm uninstall request
+  - npm uninstall bluebird
+  - npm install request@$V_REQUEST
+  - npm install bluebird@$V_BLUEBIRD
