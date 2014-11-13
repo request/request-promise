@@ -11,7 +11,7 @@
 
 ---
 
-[![Build Status](https://travis-ci.org/tyabonil/request-promise.svg?branch=master)](https://travis-ci.org/tyabonil/request-promise) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](#can-i-trust-this-module) [![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/tyabonil/request-promise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.org/tyabonil/request-promise.svg?branch=master)](https://travis-ci.org/tyabonil/request-promise) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](#can-i-trust-this-module) [![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
 
