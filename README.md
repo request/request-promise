@@ -5,6 +5,12 @@
 
 # Request-Promise
 
+---
+
+**Users of version 0.2.x please read the [migration instructions](#migrating-from-02x-to-03x)!**
+
+---
+
 [![Build Status](https://travis-ci.org/tyabonil/request-promise.svg?branch=master)](https://travis-ci.org/tyabonil/request-promise) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](#can-i-trust-this-module) [![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
@@ -357,7 +363,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 - v0.3.1 (2014-11-11)
 	- Added the `.promise()` method for advanced Bluebird API usage
-	  *Thanks to @devo-tox for his feedback in [issue #27](https://github.com/tyabonil/request-promise/issues/27)*
+	  *(Thanks to @devo-tox for his feedback in [issue #27](https://github.com/tyabonil/request-promise/issues/27))*
 - v0.3.0 (2014-11-10)
 	- Carefully rewritten from scratch to make Request-Promise a [drop-in replacement for Request](#request-promise-is-a-drop-in-replacement-for-request)
 
@@ -366,11 +372,11 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 - v0.2.6 (2014-11-09)
 	- When calling `rp.defaults(...)` the passed `resolveWithFullResponse` option is not always overwritten by the default anymore.
 	- The function passed as the `transform` option now also gets the full response as the second parameter. The new signature is: `function (body, response) { }`
-	  *Thanks to @khankuan for his feedback in [issue #24](https://github.com/tyabonil/request-promise/issues/24)*
+	  *(Thanks to @khankuan for his feedback in [issue #24](https://github.com/tyabonil/request-promise/issues/24))*
 	- If the transform function throws an exception it is caught and the promise is rejected with it.
 - v0.2.5 (2014-11-06)
 	- The Request instance which is wrapped by Request-Promise is exposed as `rp.request`.
-	  *Thanks to @hjpbarcelos for his feedback in [issue #23](https://github.com/tyabonil/request-promise/issues/23)*
+	  *(Thanks to @hjpbarcelos for his feedback in [issue #23](https://github.com/tyabonil/request-promise/issues/23))*
 
 ## MIT Licensed
 
