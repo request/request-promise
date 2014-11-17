@@ -1,6 +1,6 @@
 {
   "name": "request-promise",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Promise-based Wrapper for XHR using Request and Bluebird",
   "main": "./lib/rp.js",
   "engines": {
