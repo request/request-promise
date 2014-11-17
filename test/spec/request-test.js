@@ -353,6 +353,14 @@ describe('Request-Promise', function () {
             return expect(rp.get('http://localhost:4000/200')).to.eventually.eql('GET /200');
         });
 
+        it('rp.get with options', function () {
+            return expect(rp.get({ url: 'http://localhost:4000/200' })).to.eventually.eql('GET /200');
+        });
+
+        it('rp.get with uri and options', function () {
+            return expect(rp.get('http://localhost:4000/404', { simple: false })).to.eventually.eql('GET /404');
+        });
+
         it('rp.head', function () {
 
             var options = {
