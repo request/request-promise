@@ -30,17 +30,17 @@
   },
   "dependencies": {
     "bluebird": "^2.3",
+    "chalk": "^0.5.1",
     "lodash": "^2.4.1",
     "request": "^2.34"
   },
   "devDependencies": {
     "chai": "^1.10.0",
     "chai-as-promised": "^4.1.1",
-    "chalk": "^0.5.1",
     "gulp": "^3.8.10",
     "gulp-istanbul": "^0.3.1",
     "gulp-jshint": "^1.9.0",
-    "gulp-mocha": "^1.1.1",
+    "gulp-mocha": "^2.0.0",
     "jshint-stylish": "^1.0.0",
     "rimraf": "^2.2.8",
     "run-sequence": "^1.0.1"
