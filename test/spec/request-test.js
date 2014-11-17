@@ -657,6 +657,33 @@ describe('Request-Promise', function () {
 
         });
 
+        it('.caught(...) as an alias for .catch(...)', function (done) {
+
+            rp('http://localhost:4000/404')
+                .caught(function (reason) {
+                    done();
+                });
+
+        });
+
+        it('.finally(Function handler)', function (done) {
+
+            rp('http://localhost:4000/200')
+                .finally(function () {
+                    done();
+                });
+
+        });
+
+        it('.lastly(...) as an alias for .finally(...)', function (done) {
+
+            rp('http://localhost:4000/200')
+                .lastly(function () {
+                    done();
+                });
+
+        });
+
         it('.promise() to return the Bluebird promise itself', function () {
 
             var context = { message: 'Hello World!'};
