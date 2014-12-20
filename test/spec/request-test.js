@@ -6,6 +6,7 @@ var url = require('url');
 var Bluebird = require('bluebird');
 var childProcess = require('child_process');
 var path = require('path');
+var es = require('event-stream');
 
 
 describe('Request-Promise', function () {
@@ -834,13 +835,30 @@ describe('Request-Promise', function () {
             });
         });
 
-        it('for registering to the emitted complete event', function (done) {
+        it('for registering a handler to the emitted complete event', function (done) {
             rp('http://localhost:4000/200')
                 .on('complete', function (httpResponse, body) {
                     expect(httpResponse.statusCode).to.eql(200);
                     expect(body).to.eql('GET /200');
                     done();
                 });
+        });
+
+        it('for piping data while also the promise is used', function (done) {
+
+            var req = rp('http://localhost:4000/200');
+
+            var _data;
+            req.pipe(es.wait(function (err, data) {
+                    _data = data.toString();
+                }));
+
+            req.then(function (body) {
+                    expect(body).to.eql('GET /200');
+                    expect(_data).to.eql('GET /200');
+                    done();
+                });
+
         });
 
         it('for requests with a redirect', function () {

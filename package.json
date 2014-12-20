@@ -37,6 +37,7 @@
   "devDependencies": {
     "chai": "^1.10.0",
     "chai-as-promised": "^4.1.1",
+    "event-stream": "^3.1.7",
     "gulp": "^3.8.10",
     "gulp-istanbul": "^0.3.1",
     "gulp-jshint": "^1.9.0",
