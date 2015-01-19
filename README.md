@@ -374,6 +374,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
+- v0.3.3 (2015-01-19)
+    - Fixed handling possibly unhandled rejections to work with the latest version of Bluebird
+      *(Thanks to @slang800 for reporting this in [issue #36](https://github.com/tyabonil/request-promise/issues/36))*
 - v0.3.2 (2014-11-17)
 	- Exposed `.finally(...)` to allow using it as the first method in the promise chain
 	  *(Thanks to @hjpbarcelos for his [pull request #28](https://github.com/tyabonil/request-promise/pull/28))*
