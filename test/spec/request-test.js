@@ -105,9 +105,7 @@ describe('Request-Promise', function () {
             var expectedOptions = {
                 uri: 'http://localhost:1/200',
                 simple: true,
-                resolveWithFullResponse: false,
-                tunnel: false,
-                callback: undefined
+                resolveWithFullResponse: false
             };
 
             rp('http://localhost:1/200')
@@ -116,7 +114,8 @@ describe('Request-Promise', function () {
                 })
                 .catch(function (reason) {
                     expect(reason).to.be.an('object');
-                    expect(reason.error.message).to.eql('connect ECONNREFUSED');
+                    expect(reason.error.message).to.contain('connect ECONNREFUSED');
+                    delete reason.options.callback; // Even out Request version differences.
                     expect(reason.options).to.eql(expectedOptions);
                     expect(reason.response).to.eql(undefined);
                     expect(reason.statusCode).to.eql(undefined);
@@ -131,9 +130,7 @@ describe('Request-Promise', function () {
             var expectedOptions = {
                 uri: 'http://localhost:4000/404',
                 simple: true,
-                resolveWithFullResponse: false,
-                tunnel: false,
-                callback: undefined
+                resolveWithFullResponse: false
             };
 
             rp('http://localhost:4000/404')
@@ -143,6 +140,7 @@ describe('Request-Promise', function () {
                 .catch(function (reason) {
                     expect(reason).to.be.an('object');
                     expect(reason.error).to.eql('GET /404');
+                    delete reason.options.callback; // Even out Request version differences.
                     expect(reason.options).to.eql(expectedOptions);
                     expect(reason.response).to.be.an('object');
                     expect(reason.response.body).to.eql('GET /404');
@@ -411,17 +409,21 @@ describe('Request-Promise', function () {
 
         });
 
-        it('for cascading overwrites', function () {
+        if (process.env.V_REQUEST !== '2.34.0') { // Was never supported in this version so fixing it wouldn't make sense.
 
-            var nonSimpleRP = rp.defaults({ simple: false });
-            var nonSimpleRPWithFullResp = nonSimpleRP.defaults({ resolveWithFullResponse: true });
+            it('for cascading overwrites', function () {
 
-            return nonSimpleRPWithFullResp('http://localhost:4000/404')
-                .then(function (response) {
-                    expect(response.statusCode).to.eql(404);
-                });
+                var nonSimpleRP = rp.defaults({ simple: false });
+                var nonSimpleRPWithFullResp = nonSimpleRP.defaults({ resolveWithFullResponse: true });
 
-        });
+                return nonSimpleRPWithFullResp('http://localhost:4000/404')
+                    .then(function (response) {
+                        expect(response.statusCode).to.eql(404);
+                    });
+
+            });
+
+        }
 
         it('and not interfere with the original Request-Promise instance', function () {
 
