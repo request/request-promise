@@ -7,6 +7,8 @@
 
 ---
 
+Using io.js? Please read the [support section](#support-for-iojs).
+
 **Users of version 0.2.x please read the [migration instructions](#migrating-from-02x-to-03x)!**
 
 ---
@@ -350,6 +352,10 @@ In regard to these methods and options Request-Promise 0.3.x is largely compatib
 - `rp_03x.head(...)` throws an exception if the options contain a request body. This is due to Requests original implementation which was not used in Request-Promise 0.2.x.
 - `rp_02x.request` does not exist in Request-Promise 0.3.x since Request is exported directly. (`rp_02x.request === rp_03x`)
 
+## Support for io.js
+
+We added io.js to our Travis CI build and all tests are green. However, they mostly cover the functionality of Request-Promise itself. Barely of Request and Bluebird. At the time of writing both libraries didn't add io.js to their build, yet. So please use io.js with care.
+
 ## Can I trust this module?
 
 The less than 100 lines of code – on top of the well tested libraries Request and Bluebird – are covered by over 60 tests producing a test coverage of 100% and beyond. Additionally, the original tests of Request were executed on Request-Promise to ensure that we can call it "a drop-in replacement for Request". So yes, we did our best to make Request-Promise live up to the quality Request and Bluebird are known for.
@@ -374,6 +380,8 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
+- v0.4.0 (forthcoming)
+    - [Added io.js](#support-for-iojs) to the Travis CI build
 - v0.3.3 (2015-01-19)
     - Fixed handling possibly unhandled rejections to work with the latest version of Bluebird
       *(Thanks to @slang800 for reporting this in [issue #36](https://github.com/tyabonil/request-promise/issues/36))*
