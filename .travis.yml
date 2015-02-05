@@ -3,6 +3,7 @@ language: node_js
 node_js:
   - "0.10"
   - "0.11"
+  - iojs
 
 env:
   - V_REQUEST=2.34.0 V_BLUEBIRD=2.3.0
