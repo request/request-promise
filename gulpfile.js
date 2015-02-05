@@ -67,7 +67,7 @@ gulp.task('test', ['clean'], function (done) {
                 .on('error', function (err) {
                     console.error(String(err));
                     console.error(chalk.bold.bgRed(' TESTS FAILED '));
-                    done();
+                    done(new Error(' TESTS FAILED '));
                 })
                 .pipe(istanbul.writeReports({
                     reporters: ['lcov'],
