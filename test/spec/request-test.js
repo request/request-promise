@@ -1,6 +1,7 @@
 'use strict';
 
 var rp = require('../../lib/rp.js');
+var errors = require('../../errors.js');
 var http = require('http');
 var url = require('url');
 var Bluebird = require('bluebird');
@@ -114,11 +115,22 @@ describe('Request-Promise', function () {
                 })
                 .catch(function (reason) {
                     expect(reason).to.be.an('object');
+                    expect(typeof reason).to.eql('object'); // Just double checking
                     expect(reason.error.message).to.contain('connect ECONNREFUSED');
                     delete reason.options.callback; // Even out Request version differences.
                     expect(reason.options).to.eql(expectedOptions);
                     expect(reason.response).to.eql(undefined);
                     expect(reason.statusCode).to.eql(undefined);
+
+                    // Test for Error type introduced in 0.4
+                    expect(reason instanceof errors.RequestError).to.eql(true);
+                    expect(reason.name).to.eql('RequestError');
+                    expect(reason.message).to.contain('connect ECONNREFUSED');
+                    expect(reason.cause).to.eql(reason.error);
+
+                    throw reason; // Testing Bluebird's catch by type
+                })
+                .catch(errors.RequestError, function (reason) {
                     done();
                 })
                 .catch(done);
@@ -139,12 +151,23 @@ describe('Request-Promise', function () {
                 })
                 .catch(function (reason) {
                     expect(reason).to.be.an('object');
+                    expect(typeof reason).to.eql('object'); // Just double checking
                     expect(reason.error).to.eql('GET /404');
                     delete reason.options.callback; // Even out Request version differences.
                     expect(reason.options).to.eql(expectedOptions);
                     expect(reason.response).to.be.an('object');
                     expect(reason.response.body).to.eql('GET /404');
                     expect(reason.statusCode).to.eql(404);
+
+                    // Test for Error type introduced in 0.4
+                    expect(reason instanceof errors.StatusCodeError).to.eql(true);
+                    expect(reason.name).to.eql('StatusCodeError');
+                    expect(reason.statusCode).to.eql(404);
+                    expect(reason.message).to.eql('404 - GET /404');
+
+                    throw reason; // Testing Bluebird's catch by type
+                })
+                .catch(errors.StatusCodeError, function (reason) {
                     done();
                 })
                 .catch(done);
