@@ -220,16 +220,17 @@ request(options, function (err, response, body) {
     var reason;
     if (err) {
         reason = {
+            cause: err,
             error: err,
             options: options,
             response: response
         };
 	} else if (!(/^2/.test('' + response.statusCode))) { // Status Codes other than 2xx
         reason = {
+            statusCode: response.statusCode,
             error: body,
             options: options,
-            response: response,
-            statusCode: response.statusCode
+            response: response
         };
     }
 
@@ -249,6 +250,7 @@ rp({ uri: 'http://google.com', simple: false })
 request(options, function (err, response, body) {
     if (err) {
         var reason = {
+            cause: err,
             error: err,
             options: options,
             response: response
@@ -258,6 +260,21 @@ request(options, function (err, response, body) {
 });
 // E.g. a 404 would now fulfill the promise.
 // Combine it with resolveWithFullResponse = true to check the status code in the fulfillment handler.
+```
+
+With version 0.4 the reason objects became Error objects with identical properties to ensure backwards compatibility. These new Error types allow targeted catch blocks:
+
+``` js
+var errors = require('request-promise/errors');
+
+rp('http://google.com')
+    .catch(errors.RequestError, function (reason) {
+        // Handle a failed request for which Request provided an error...
+        // reason.cause is the Error object Request would pass into a callback.
+	})
+	.catch(errors.StatusCodeError, function (reason) {
+        // Handle responses with status codes other than 2xx...
+	});
 ```
 
 ### The `transform` function
@@ -358,9 +375,9 @@ We added io.js to our Travis CI build and all tests are green. However, they mos
 
 ## Can I trust this module?
 
-The less than 100 lines of code – on top of the well tested libraries Request and Bluebird – are covered by over 60 tests producing a test coverage of 100% and beyond. Additionally, the original tests of Request were executed on Request-Promise to ensure that we can call it "a drop-in replacement for Request". So yes, we did our best to make Request-Promise live up to the quality Request and Bluebird are known for.
+The approx. 120 lines of code – on top of the well tested libraries Request and Bluebird – are covered by over 60 tests producing a test coverage of 100% and beyond. Additionally, the original tests of Request were executed on Request-Promise to ensure that we can call it "a drop-in replacement for Request". So yes, we did our best to make Request-Promise live up to the quality Request and Bluebird are known for.
 
-However, there is one important design detail: Request-Promise passes a callback to each Request call which it uses to resolve or reject the promise. The callback is also registered if you don't use the promise features in a certain request. E.g. you may only use streaming: `rp(...).pipe(...)` As a result, [additional code](https://github.com/request/request/blob/master/request.js#L1281-L1328) is executed that buffers the streamed data and passes it as the response body to the "complete" event. If you stream large quantities of data the buffer grows big and that has an impact on your memory footprint. In these cases you can just `var request = require('request');` and use `request` for streaming large quantities of data.
+However, there is one important design detail: Request-Promise passes a callback to each Request call which it uses to resolve or reject the promise. The callback is also registered if you don't use the promise features in a certain request. E.g. you may only use streaming: `rp(...).pipe(...)` As a result, [additional code](https://github.com/request/request/blob/master/request.js#L1194-L1241) is executed that buffers the streamed data and passes it as the response body to the "complete" event. If you stream large quantities of data the buffer grows big and that has an impact on your memory footprint. In these cases you can just `var request = require('request');` and use `request` for streaming large quantities of data.
 
 ## Contributing
 
@@ -380,8 +397,11 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
-- v0.4.0 (forthcoming)
-    - [Added io.js](#support-for-iojs) to the Travis CI build
+- v0.4.0 (2015-02-08)
+    - Introduced Error types used for the reject reasons (See last part [this section](#rejected-promises-and-the-simple-option))
+      *(Thanks to @jakecraige for starting the discussion in [issue #38](https://github.com/tyabonil/request-promise/issues/38))*
+    - **Minor Braking Change:** The reject reason objects became actual Error objects. However, `typeof reason === 'object'` still holds true and the error objects have the same properties as the previous reason objects. If the reject handler only accesses the properties on the reason object - which is usually the case - no migration is required.
+    - [Added io.js](#support-for-iojs) and node.js 0.12 to the Travis CI build
 - v0.3.3 (2015-01-19)
     - Fixed handling possibly unhandled rejections to work with the latest version of Bluebird
       *(Thanks to @slang800 for reporting this in [issue #36](https://github.com/tyabonil/request-promise/issues/36))*
