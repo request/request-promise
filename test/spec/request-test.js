@@ -8,6 +8,7 @@ var Bluebird = require('bluebird');
 var childProcess = require('child_process');
 var path = require('path');
 var es = require('event-stream');
+var bodyParser = require('body-parser');
 
 
 describe('Request-Promise', function () {
@@ -16,19 +17,22 @@ describe('Request-Promise', function () {
 
     before(function (done) {
         // This creates a local server to test for various status codes. A request to /404 returns a 404, etc
-        server = http.createServer(function(request, response){
-            var path = url.parse(request.url).pathname;
-            var status = parseInt(path.split('/')[1]);
-            if(isNaN(status)) { status = 555; }
-            if (status === 302) {
-                response.writeHead(status, { location: '/200' });
-                lastResponseBody = '';
-                response.end();
-            } else {
-                response.writeHead(status, { 'Content-Type': 'text/plain' });
-                lastResponseBody = request.method + ' ' + request.url;
-                response.end(lastResponseBody);
-            }
+        server = http.createServer(function (request, response) {
+            (bodyParser.json())(request, response, function () {
+                var path = url.parse(request.url).pathname;
+                var status = parseInt(path.split('/')[1]);
+                if(isNaN(status)) { status = 555; }
+                if (status === 302) {
+                    response.writeHead(status, { location: '/200' });
+                    lastResponseBody = '';
+                    response.end();
+                } else {
+                    response.writeHead(status, { 'Content-Type': 'text/plain' });
+                    var body = (request.method === 'POST' && JSON.stringify(request.body) !== '{}' ? ' - ' + JSON.stringify(request.body) : '');
+                    lastResponseBody = request.method + ' ' + request.url + body;
+                    response.end(lastResponseBody);
+                }
+            });
         });
         server.listen(4000, function () {
             done();
@@ -892,6 +896,17 @@ describe('Request-Promise', function () {
                 .then(function (body) {
                     expect(body).to.eql('GET /200');
                 });
+
+        });
+
+        it('for passing the data as the second parameter', function (done) {
+
+            rp('http://localhost:4000/200', { method: 'POST', json: { foo: 'bar' } })
+                .then(function (body) {
+                    expect(body).to.eql('POST /200 - {"foo":"bar"}');
+                    done();
+                })
+                .catch(done);
 
         });
 
