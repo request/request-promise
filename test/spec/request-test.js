@@ -947,6 +947,8 @@ describe('Request-Promise', function () {
 
         it('in the README', function () {
 
+            this.timeout(10000);
+
             var options;
 
             return Bluebird.resolve()
