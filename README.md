@@ -397,6 +397,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
+- v0.4.1 (2015-03-20)
+    - Improved Error types to work in browsers without v8 engine
+      *(Thanks to @nodiis for [pull request #40](https://github.com/tyabonil/request-promise/pull/40))*
 - v0.4.0 (2015-02-08)
     - Introduced Error types used for the reject reasons (See last part [this section](#rejected-promises-and-the-simple-option))
       *(Thanks to @jakecraige for starting the discussion in [issue #38](https://github.com/tyabonil/request-promise/issues/38))*
