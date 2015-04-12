@@ -35,17 +35,17 @@
     "request": "^2.34"
   },
   "devDependencies": {
-    "body-parser": "^1.12.0",
-    "chai": "^1.10.0",
-    "chai-as-promised": "^4.1.1",
-    "event-stream": "^3.1.7",
-    "gulp": "^3.8.10",
-    "gulp-istanbul": "^0.3.1",
-    "gulp-jshint": "^1.9.0",
-    "gulp-mocha": "^2.0.0",
-    "jshint-stylish": "^1.0.0",
-    "rimraf": "^2.2.8",
-    "run-sequence": "^1.0.1"
+    "body-parser": "1.12.x",
+    "chai": "2.2.x",
+    "chai-as-promised": "4.3.x",
+    "event-stream": "3.3.x",
+    "gulp": "3.8.x",
+    "gulp-istanbul": "0.8.x",
+    "gulp-jshint": "1.10.x",
+    "gulp-mocha": "2.0.x",
+    "jshint-stylish": "1.0.x",
+    "rimraf": "2.3.x",
+    "run-sequence": "1.0.x"
   },
   "engines": {
     "node": ">=0.10.0"

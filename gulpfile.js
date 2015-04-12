@@ -60,6 +60,7 @@ gulp.task('test', ['clean'], function (done) {
         .pipe(istanbul({
             coverageVariable: coverageVariable
         }))
+        .pipe(istanbul.hookRequire())
         .on('finish', function () {
 
             gulp.src(paths.specFiles)
