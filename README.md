@@ -371,7 +371,7 @@ In regard to these methods and options Request-Promise 0.3.x is largely compatib
 
 ## Support for io.js
 
-We added io.js to our Travis CI build and all tests are green. However, they mostly cover the functionality of Request-Promise itself. Barely of Request and Bluebird. At the time of writing both libraries didn't add io.js to their build, yet. So please use io.js with care.
+We added io.js to our Travis CI build and all tests are green. However, they mostly cover the functionality of Request-Promise itself. Barely of Request and Bluebird. At the time of writing Request did but Bluebird didn't add io.js to its build, yet. So please use io.js with care.
 
 ## Can I trust this module?
 
@@ -397,7 +397,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
-- v0.4.2 (forthcoming)
+- v0.4.2 (2015-04-12)
     - Updated dependencies
 - v0.4.1 (2015-03-20)
     - Improved Error types to work in browsers without v8 engine
