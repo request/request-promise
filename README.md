@@ -13,7 +13,7 @@ Using io.js? Please read the [support section](#support-for-iojs).
 
 ---
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/tyabonil/request-promise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.org/tyabonil/request-promise.svg?branch=master)](https://travis-ci.org/tyabonil/request-promise) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](#can-i-trust-this-module) [![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/request/request-promise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.org/tyabonil/request-promise.svg?branch=master)](https://travis-ci.org/tyabonil/request-promise) [![Coverage Status](http://img.shields.io/badge/coverage-far%20beyond%20100%25-brightgreen.svg)](#can-i-trust-this-module) [![Dependency Status](https://david-dm.org/tyabonil/request-promise.svg)](https://david-dm.org/tyabonil/request-promise)
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
 
@@ -401,21 +401,21 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
     - Updated dependencies
 - v0.4.1 (2015-03-20)
     - Improved Error types to work in browsers without v8 engine
-      *(Thanks to @nodiis for [pull request #40](https://github.com/tyabonil/request-promise/pull/40))*
+      *(Thanks to @nodiis for [pull request #40](https://github.com/request/request-promise/pull/40))*
 - v0.4.0 (2015-02-08)
     - Introduced Error types used for the reject reasons (See last part [this section](#rejected-promises-and-the-simple-option))
-      *(Thanks to @jakecraige for starting the discussion in [issue #38](https://github.com/tyabonil/request-promise/issues/38))*
+      *(Thanks to @jakecraige for starting the discussion in [issue #38](https://github.com/request/request-promise/issues/38))*
     - **Minor Braking Change:** The reject reason objects became actual Error objects. However, `typeof reason === 'object'` still holds true and the error objects have the same properties as the previous reason objects. If the reject handler only accesses the properties on the reason object - which is usually the case - no migration is required.
     - [Added io.js](#support-for-iojs) and node.js 0.12 to the Travis CI build
 - v0.3.3 (2015-01-19)
     - Fixed handling possibly unhandled rejections to work with the latest version of Bluebird
-      *(Thanks to @slang800 for reporting this in [issue #36](https://github.com/tyabonil/request-promise/issues/36))*
+      *(Thanks to @slang800 for reporting this in [issue #36](https://github.com/request/request-promise/issues/36))*
 - v0.3.2 (2014-11-17)
 	- Exposed `.finally(...)` to allow using it as the first method in the promise chain
-	  *(Thanks to @hjpbarcelos for his [pull request #28](https://github.com/tyabonil/request-promise/pull/28))*
+	  *(Thanks to @hjpbarcelos for his [pull request #28](https://github.com/request/request-promise/pull/28))*
 - v0.3.1 (2014-11-11)
 	- Added the `.promise()` method for advanced Bluebird API usage
-	  *(Thanks to @devo-tox for his feedback in [issue #27](https://github.com/tyabonil/request-promise/issues/27))*
+	  *(Thanks to @devo-tox for his feedback in [issue #27](https://github.com/request/request-promise/issues/27))*
 - v0.3.0 (2014-11-10)
 	- Carefully rewritten from scratch to make Request-Promise a [drop-in replacement for Request](#request-promise-is-a-drop-in-replacement-for-request)
 
@@ -423,15 +423,15 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 - v0.2.7 (2014-11-17)
 	- Fixed http method shortcuts like `rp.get(...)` when used with passing an options object
-	  *(Thanks to @hjpbarcelos for reporting this in [issue #29](https://github.com/tyabonil/request-promise/issues/29))*
+	  *(Thanks to @hjpbarcelos for reporting this in [issue #29](https://github.com/request/request-promise/issues/29))*
 - v0.2.6 (2014-11-09)
 	- When calling `rp.defaults(...)` the passed `resolveWithFullResponse` option is not always overwritten by the default anymore.
 	- The function passed as the `transform` option now also gets the full response as the second parameter. The new signature is: `function (body, response) { }`
-	  *(Thanks to @khankuan for his feedback in [issue #24](https://github.com/tyabonil/request-promise/issues/24))*
+	  *(Thanks to @khankuan for his feedback in [issue #24](https://github.com/request/request-promise/issues/24))*
 	- If the transform function throws an exception it is caught and the promise is rejected with it.
 - v0.2.5 (2014-11-06)
 	- The Request instance which is wrapped by Request-Promise is exposed as `rp.request`.
-	  *(Thanks to @hjpbarcelos for his feedback in [issue #23](https://github.com/tyabonil/request-promise/issues/23))*
+	  *(Thanks to @hjpbarcelos for his feedback in [issue #23](https://github.com/request/request-promise/issues/23))*
 
 ## MIT Licensed
 

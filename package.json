@@ -11,9 +11,9 @@
     "then",
     "thenable"
   ],
-  "homepage": "https://github.com/tyabonil/request-promise",
+  "homepage": "https://github.com/request/request-promise",
   "bugs": {
-    "url": "https://github.com/tyabonil/request-promise/issues"
+    "url": "https://github.com/request/request-promise/issues"
   },
   "license": "MIT",
   "author": "Ty Abonil",
@@ -23,7 +23,7 @@
   "main": "./lib/rp.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tyabonil/request-promise.git"
+    "url": "https://github.com/request/request-promise.git"
   },
   "scripts": {
     "test": "./node_modules/.bin/gulp validate"
