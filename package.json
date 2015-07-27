@@ -31,7 +31,7 @@
   "dependencies": {
     "bluebird": "^2.3",
     "chalk": "1.0.x",
-    "lodash": "3.6.x",
+    "lodash": "^3.6.0",
     "request": "^2.34"
   },
   "devDependencies": {
