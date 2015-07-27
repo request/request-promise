@@ -23,7 +23,7 @@ The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Blu
 
 Since version 0.3.0 Request-Promise is not a wrapper around Request anymore. It now adds a `.then(...)` method to the Request prototype and exports the original Request object. This means you can now use all features of Request.
 
-Request-Promise is perfect for replacing callbacks with promises. However, if you want to pipe large amounts of data we recommend using Request for the reason [described below](#can-i-trust-this-module). Both Request and Request-Promise can be required side by side.
+Request-Promise is perfect for replacing callbacks with promises. However, if you want to pipe large quantities of data we recommend using Request for the reason [described below](#can-i-trust-this-module). Both Request and Request-Promise can be required side by side.
 
 See the [migration instructions](#migrating-from-02x-to-03x) for important changes between 0.2.x and 0.3.x. Issues and pull requests for 0.2.x are still welcome.
 
@@ -377,7 +377,7 @@ We added io.js to our Travis CI build and all tests are green. However, they mos
 
 The approx. 120 lines of code – on top of the well tested libraries Request and Bluebird – are covered by over 60 tests producing a test coverage of 100% and beyond. Additionally, the original tests of Request were executed on Request-Promise to ensure that we can call it "a drop-in replacement for Request". So yes, we did our best to make Request-Promise live up to the quality Request and Bluebird are known for.
 
-However, there is one important design detail: Request-Promise passes a callback to each Request call which it uses to resolve or reject the promise. The callback is also registered if you don't use the promise features in a certain request. E.g. you may only use streaming: `rp(...).pipe(...)` As a result, [additional code](https://github.com/request/request/blob/master/request.js#L1166-L1213) is executed that buffers the streamed data and passes it as the response body to the "complete" event. If you stream large quantities of data the buffer grows big and that has an impact on your memory footprint. In these cases you can just `var request = require('request');` and use `request` for streaming large quantities of data.
+However, there is one important design detail: Request-Promise passes a callback to each Request call which it uses to resolve or reject the promise. The callback is also registered if you don't use the promise features in a certain request. E.g. you may only use streaming: `rp(...).pipe(...)` As a result, [additional code](https://github.com/request/request/blob/master/request.js#L1010-L1059) is executed that buffers the streamed data and passes it as the response body to the "complete" event. If you stream [large quantities of data](https://github.com/request/request-promise/issues/53) the buffer grows big and that has an impact on your memory footprint. In these cases you can just `var request = require('request');` and use `request` for streaming large quantities of data.
 
 ## Contributing
 
@@ -397,6 +397,10 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
+- v0.4.3 (2015-07-27)
+    - Reduced overhead by just requiring used lodash functions instead of the whole lodash library
+      *(Thanks to @luanmuniz for [pull request #54](https://github.com/request/request-promise/pull/54))*
+    - Updated dependencies
 - v0.4.2 (2015-04-12)
     - Updated dependencies
 - v0.4.1 (2015-03-20)
