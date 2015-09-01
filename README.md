@@ -54,7 +54,9 @@ rp('http://www.google.com')
 
 var options = {
     uri : 'http://posttestserver.com/post.php',
-    method : 'POST'
+    method : 'POST',
+    json: true,
+    body: { some: 'payload' }
 };
 
 rp(options)
@@ -377,7 +379,7 @@ We added io.js to our Travis CI build and all tests are green. However, they mos
 
 The approx. 120 lines of code – on top of the well tested libraries Request and Bluebird – are covered by over 60 tests producing a test coverage of 100% and beyond. Additionally, the original tests of Request were executed on Request-Promise to ensure that we can call it "a drop-in replacement for Request". So yes, we did our best to make Request-Promise live up to the quality Request and Bluebird are known for.
 
-However, there is one important design detail: Request-Promise passes a callback to each Request call which it uses to resolve or reject the promise. The callback is also registered if you don't use the promise features in a certain request. E.g. you may only use streaming: `rp(...).pipe(...)` As a result, [additional code](https://github.com/request/request/blob/master/request.js#L1010-L1059) is executed that buffers the streamed data and passes it as the response body to the "complete" event. If you stream [large quantities of data](https://github.com/request/request-promise/issues/53) the buffer grows big and that has an impact on your memory footprint. In these cases you can just `var request = require('request');` and use `request` for streaming large quantities of data.
+However, there is one important design detail: Request-Promise passes a callback to each Request call which it uses to resolve or reject the promise. The callback is also registered if you don't use the promise features in a certain request. E.g. you may only use streaming: `rp(...).pipe(...)` As a result, [additional code](https://github.com/request/request/blob/master/request.js#L1026-L1075) is executed that buffers the streamed data and passes it as the response body to the "complete" event. If you stream [large quantities of data](https://github.com/request/request-promise/issues/53) the buffer grows big and that has an impact on your memory footprint. In these cases you can just `var request = require('request');` and use `request` for streaming large quantities of data.
 
 ## Contributing
 

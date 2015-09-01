@@ -969,12 +969,14 @@ describe('Request-Promise', function () {
 
                     options = {
                         uri : 'http://localhost:4000/200',
-                        method : 'POST'
+                        method : 'POST',
+                        json: true,
+                        body: { some: 'payload' }
                     };
 
                     return rp(options)
                         .then(function (body) {
-                            expect(body).to.eql('POST /200');
+                            expect(body).to.eql('POST /200 - {"some":"payload"}');
                         })
                         .catch(function (err) {
                             throw err;
@@ -989,7 +991,7 @@ describe('Request-Promise', function () {
 
                     return rp(options)
                         .then(function (body) {
-                            expect(body).to.eql('POST /200'.length);
+                            expect(body).to.eql('POST /200 - {"some":"payload"}'.length);
                         })
                         .catch(function (err) {
                             throw err;
