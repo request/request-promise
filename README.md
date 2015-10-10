@@ -399,6 +399,15 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ### Main Branch
 
+- v1.0.0 (upcoming)
+    - **Breaking Change**: Streaming (e.g. the use of `.pipe(...)`) is not supported anymore. The original Request library should be used for that. Both Request-Promise and Request can be used alongside in the same project without interference.
+    - **Minor Braking Change**: Some errors that were previously thrown - e.g. for wrong input parameters - are now passed to the rejected promise instead
+      *(Thanks to @josnidhin for suggesting that in [issue #43](https://github.com/request/request-promise/issues/43))*
+    - For HEAD requests the headers instead of an empty body is returned (unless `resolveWithFullResponse = true` is used)
+      *(Thanks to @zcei for proposing the change in [issue #58](https://github.com/request/request-promise/issues/58))*
+    - Extended `transform` function by a third `resolveWithFullResponse` parameter
+    - Added experimental support for continuation local storage
+      *(Thanks to @silverbp preparing this in [issue #64](https://github.com/request/request-promise/issues/64))*
 - v0.4.3 (2015-07-27)
     - Reduced overhead by just requiring used lodash functions instead of the whole lodash library
       *(Thanks to @luanmuniz for [pull request #54](https://github.com/request/request-promise/pull/54))*
