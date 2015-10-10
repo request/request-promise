@@ -894,23 +894,6 @@ describe('Request-Promise', function () {
                 });
         });
 
-        it('for piping data while also the promise is used', function (done) {
-
-            var req = rp('http://localhost:4000/200');
-
-            var _data;
-            req.pipe(es.wait(function (err, data) {
-                    _data = data.toString();
-                }));
-
-            req.then(function (body) {
-                    expect(body).to.eql('GET /200');
-                    expect(_data).to.eql('GET /200');
-                    done();
-                });
-
-        });
-
         it('for requests with a redirect', function () {
 
             return rp('http://localhost:4000/302')
@@ -967,6 +950,22 @@ describe('Request-Promise', function () {
                 });
 
             });
+
+        });
+
+        it('by not allowing the use of .pipe(...)', function () {
+
+            expect(function () {
+                rp('http://localhost:4000/200').pipe();
+            }).to.throw();
+
+        });
+
+        it('by not allowing the use of .pipeDest(...)', function () {
+
+            expect(function () {
+                rp('http://localhost:4000/200').pipeDest();
+            }).to.throw();
 
         });
 
