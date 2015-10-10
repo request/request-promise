@@ -739,7 +739,7 @@ describe('Request-Promise', function () {
                     } else {
                         done();
                     }
-                });
+                }, 10);
             });
 
         });
@@ -757,7 +757,7 @@ describe('Request-Promise', function () {
                     } else {
                         done();
                     }
-                });
+                }, 10);
             }).then(function () {}, null); // No rejection handler
 
         });
@@ -775,7 +775,7 @@ describe('Request-Promise', function () {
                     } else {
                         done();
                     }
-                });
+                }, 10);
             }).promise(); // No further chaining
 
         });
@@ -793,7 +793,7 @@ describe('Request-Promise', function () {
                     } else {
                         done();
                     }
-                });
+                }, 10);
             }).then(function () {}, function () {});
 
         });
@@ -811,7 +811,7 @@ describe('Request-Promise', function () {
                     } else {
                         done();
                     }
-                });
+                }, 10);
             }).catch(function () {});
 
         });
@@ -829,7 +829,7 @@ describe('Request-Promise', function () {
                     } else {
                         done();
                     }
-                });
+                }, 10);
             }).promise().catch(function () {});
 
         });
@@ -879,7 +879,7 @@ describe('Request-Promise', function () {
                     } else {
                         countDown();
                     }
-                });
+                }, 10);
 
             });
 
@@ -947,7 +947,7 @@ describe('Request-Promise', function () {
                     } else {
                         done();
                     }
-                });
+                }, 10);
 
             });
 
