@@ -7,7 +7,6 @@ var url = require('url');
 var Bluebird = require('bluebird');
 var childProcess = require('child_process');
 var path = require('path');
-var es = require('event-stream');
 var bodyParser = require('body-parser');
 
 
