@@ -834,20 +834,6 @@ describe('Request-Promise', function () {
 
         });
 
-        it('and not interfere with Bluebird required by the user', function (done) {
-
-            Bluebird.reject(new Error());
-
-            setTimeout(function () {
-                if (stderr.length === 0) {
-                    done(new Error('Observed no output to stderr.'));
-                } else {
-                    done();
-                }
-            });
-
-        });
-
     });
 
     describe("should not alter Request's original behavior", function () {
