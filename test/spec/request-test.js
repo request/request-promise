@@ -110,7 +110,8 @@ describe('Request-Promise', function () {
             var expectedOptions = {
                 uri: 'http://localhost:1/200',
                 simple: true,
-                resolveWithFullResponse: false
+                resolveWithFullResponse: false,
+                transform: undefined
             };
 
             rp('http://localhost:1/200')
@@ -146,7 +147,8 @@ describe('Request-Promise', function () {
             var expectedOptions = {
                 uri: 'http://localhost:4000/404',
                 simple: true,
-                resolveWithFullResponse: false
+                resolveWithFullResponse: false,
+                transform: undefined
             };
 
             rp('http://localhost:4000/404')
@@ -369,6 +371,31 @@ describe('Request-Promise', function () {
             return rp(options)
                 .then(function (transformedResponse) {
                     expect(transformedResponse).to.eql('GET /200');
+                });
+
+        });
+
+        it('for HEAD by default', function () {
+
+            return rp.head('http://localhost:4000/200')
+                .then(function (transformedResponse) {
+                    expect(transformedResponse['content-type']).to.eql('text/plain');
+                });
+
+        });
+
+        it('but still letting to overwrite the default transform for HEAD', function () {
+
+            var options = {
+                url: 'http://localhost:4000/200',
+                transform: function () {
+                    return 'test';
+                }
+            };
+
+            return rp.head(options)
+                .then(function (transformedResponse) {
+                    expect(transformedResponse).to.eql('test');
                 });
 
         });
