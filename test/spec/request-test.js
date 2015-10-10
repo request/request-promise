@@ -997,13 +997,17 @@ describe('Request-Promise', function () {
 
     });
 
-    describe('should still allow to require Request independently', function (done) {
+    describe('should still allow to require Request independently', function () {
 
         it('by not interfering with Request required afterwards', function (done) {
 
             childProcess.exec('node ' + path.join(__dirname, '../fixtures/require/afterwards.js'), function (err, stdout, stderr) {
-                expect(stdout).to.contain('rp: true, request: true');
-                done();
+                try {
+                    expect(stdout).to.contain('rp: true, request: true');
+                    done();
+                } catch (e) {
+                    done(e);
+                }
             });
 
         });
@@ -1011,8 +1015,12 @@ describe('Request-Promise', function () {
         it('by not interfering with Request required beforehand', function (done) {
 
             childProcess.exec('node ' + path.join(__dirname, '../fixtures/require/beforehand.js'), function (err, stdout, stderr) {
-                expect(stdout).to.contain('request: true, rp: true');
-                done();
+                try {
+                    expect(stdout).to.contain('request: true, rp: true');
+                    done();
+                } catch (e) {
+                    done(e);
+                }
             });
 
         });
@@ -1020,8 +1028,12 @@ describe('Request-Promise', function () {
         it('by not interfering with Request required beforehand and afterwards being identical', function (done) {
 
             childProcess.exec('node ' + path.join(__dirname, '../fixtures/require/beforehandAndAfterwards.js'), function (err, stdout, stderr) {
-                expect(stdout).to.contain('request1: true, rp: true, request2: true');
-                done();
+                try {
+                    expect(stdout).to.contain('request1: true, rp: true, request2: true');
+                    done();
+                } catch (e) {
+                    done(e);
+                }
             });
 
         });
