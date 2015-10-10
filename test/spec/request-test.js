@@ -726,7 +726,7 @@ describe('Request-Promise', function () {
             process.stderr.write = origStderrWrite;
         });
 
-        it('by muting them if .then(...) was not called yet', function (done) {
+        it('by printing them if .then(...) was not called yet', function (done) {
 
             rp('http://localhost:1/200', function (err) {
                 if (!err) {
@@ -734,8 +734,8 @@ describe('Request-Promise', function () {
                     return;
                 }
                 setTimeout(function () {
-                    if (stderr.length > 0) {
-                        done(new Error('Observed unexpected output to stderr.'));
+                    if (stderr.length === 0) {
+                        done(new Error('Observed no output to stderr.'));
                     } else {
                         done();
                     }
@@ -852,16 +852,51 @@ describe('Request-Promise', function () {
 
     describe("should not alter Request's original behavior", function () {
 
-        it('for emitting errors with no listener', function () {
-            expect(function () {
-                rp({});
-            }).to.throw();
-        });
+        describe('but also include unhandled rejections', function () {
 
-        it('for emitting errors to the callback', function (done) {
-            rp({}, function (err) {
-                if (err) { done(); }
+            var origStderrWrite, stderr;
+
+            beforeEach(function () {
+                origStderrWrite = process.stderr.write;
+                stderr = [];
+                process.stderr.write = function (string, encoding, fd) {
+                    stderr.push(string);
+                };
             });
+
+            afterEach(function () {
+                process.stderr.write = origStderrWrite;
+            });
+
+            it('when emitting errors to the callback', function (done) {
+
+                var counter = 2;
+                function countDown() {
+                    counter -= 1;
+                    if (counter === 0) {
+                        done();
+                    }
+                }
+
+                rp({}, function (err) {
+                    if (err) {
+                        countDown();
+                    } else {
+                        done(new Error('Observed no output to stderr.'));
+                    }
+                });
+
+                // Unhandled rejection expected
+                setTimeout(function () {
+                    if (stderr.length === 0) {
+                        done(new Error('Observed no output to stderr.'));
+                    } else {
+                        countDown();
+                    }
+                });
+
+            });
+
         });
 
         it('for registering a handler to the emitted complete event', function (done) {
@@ -907,6 +942,45 @@ describe('Request-Promise', function () {
                     done();
                 })
                 .catch(done);
+
+        });
+
+    });
+
+    describe("should alter Request's original behavior", function () {
+
+        describe('by preferring unhandled rejections', function () {
+
+            var origStderrWrite, stderr;
+
+            beforeEach(function () {
+                origStderrWrite = process.stderr.write;
+                stderr = [];
+                process.stderr.write = function(string, encoding, fd) {
+                    stderr.push(string);
+                };
+            });
+
+            afterEach(function () {
+                process.stderr.write = origStderrWrite;
+            });
+
+            it('when emitting errors with no listener', function (done) {
+
+                expect(function () {
+                    rp({});
+                }).to.not.throw();
+
+                // Unhandled rejection expected
+                setTimeout(function () {
+                    if (stderr.length === 0) {
+                        done(new Error('Observed no output to stderr.'));
+                    } else {
+                        done();
+                    }
+                });
+
+            });
 
         });
 
