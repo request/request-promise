@@ -1040,6 +1040,23 @@ describe('Request-Promise', function () {
 
     });
 
+    describe('should support continuation local storage', function () {
+
+        it('with an untouched Bluebird prototype bound to a single namespace', function (done) {
+
+            childProcess.exec('node ' + path.join(__dirname, '../fixtures/cls/single-namespace.js'), function (err, stdout, stderr) {
+                try {
+                    expect(stdout).to.contain('2\n');
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+
+        });
+
+    });
+
     describe('should run the examples', function () {
 
         it('in the README', function () {
