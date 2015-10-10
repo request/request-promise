@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "bluebird": "^2.3",
-    "chalk": "^1.1.0",
     "lodash": "^3.10.0",
     "request": "^2.34"
   },
