@@ -26,7 +26,7 @@
     "url": "https://github.com/request/request-promise.git"
   },
   "scripts": {
-    "test": "./node_modules/.bin/gulp validate"
+    "test": "./node_modules/.bin/gulp ci"
   },
   "dependencies": {
     "bluebird": "^2.3",
@@ -40,6 +40,7 @@
     "chalk": "^1.1.1",
     "event-stream": "3.3.x",
     "gulp": "3.8.x",
+    "gulp-coveralls": "0.1.x",
     "gulp-istanbul": "0.8.x",
     "gulp-jshint": "1.10.x",
     "gulp-mocha": "2.0.x",
