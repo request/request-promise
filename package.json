@@ -37,6 +37,7 @@
     "body-parser": "1.12.x",
     "chai": "2.2.x",
     "chai-as-promised": "4.3.x",
+    "chalk": "^1.1.1",
     "event-stream": "3.3.x",
     "gulp": "3.8.x",
     "gulp-istanbul": "0.8.x",
