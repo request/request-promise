@@ -5,12 +5,6 @@
 
 # Request-Promise
 
----
-
-**Users of version 0.4.x please read the [migration instructions](#migrating-from-04x-to-1)!**
-
----
-
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/request/request-promise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.org/request/request-promise.svg?branch=master)](https://travis-ci.org/request/request-promise) [![Coverage Status](https://coveralls.io/repos/request/request-promise/badge.svg?branch=master&service=github)](https://coveralls.io/github/request/request-promise?branch=master) [![Dependency Status](https://david-dm.org/request/request-promise.svg)](https://david-dm.org/request/request-promise)
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
@@ -31,49 +25,149 @@ Request-Promise depends on loosely defined versions of Request and Bluebird. If 
 
 ``` js
 var rp = require('request-promise');
+```
 
+### Crawl a webpage
+
+``` js
 rp('http://www.google.com')
-    .then(console.dir)
-    .catch(console.error);
+    .then(function (htmlString) {
+        // Process html...
+    })
+    .catch(function (err) {
+        // Crawling failed...
+    });
+```
 
-// --> 'GET's and displays google.com
+### Crawl a webpage better
+
+``` js
+var cheerio = require('cheerio'); // Basically jQuery for node.js
 
 var options = {
-    uri : 'http://posttestserver.com/post.php',
-    method : 'POST',
-    json: true,
-    body: { some: 'payload' }
+    uri: 'http://www.google.com',
+    transform: function (body) {
+        return cheerio.load(body);
+    }
 };
 
 rp(options)
-    .then(console.dir)
-    .catch(console.error);
+    .then(function ($) {
+        // Process html like you would with jQuery...
+    })
+    .catch(function (err) {
+        // Crawling failed or Cheerio choked...
+    });
+```
 
-// --> Displays response from server after post
+### GET something from a JSON REST API
 
-options.transform = function (data) { return data.length; };
+``` js
+var options = {
+    uri: 'https://api.github.com/user/repos',
+    qs: {
+        access_token: 'xxxxx xxxxx' // -> uri + '?access_token=xxxxx%20xxxxx'
+    },
+    headers: {
+        'User-Agent': 'Request-Promise'
+    },
+    json: true // Automatically parses the JSON string in the response
+};
 
 rp(options)
-    .then(console.dir)
-    .catch(console.error);
+    .then(function (repos) {
+        console.log('User has %d repos', repos.length);
+    })
+    .catch(function (err) {
+        // API call failed...
+    });
+```
 
-// transform is called just before promise is fulfilled
-// --> Displays length of response from server after post
+### POST data to a JSON REST API
 
+``` js
+var options = {
+    method: 'POST',
+    uri: 'http://posttestserver.com/post.php',
+    body: {
+        some: 'payload'
+    },
+    json: true // Automatically stringifies the body to JSON
+};
 
-// Get full response after DELETE
-options = {
+rp(options)
+    .then(function (parsedBody) {
+        // POST succeeded...
+    })
+    .catch(function (err) {
+        // POST failed...
+    });
+```
+
+### POST like HTML forms do
+
+``` js
+var options = {
+    method: 'POST',
+    uri: 'http://posttestserver.com/post.php',
+    form: {
+        some: 'payload' // Will be urlencoded
+    },
+    headers: {
+        /* 'content-type': 'application/x-www-form-urlencoded' */ // Set automatically
+    }
+};
+
+rp(options)
+    .then(function (body) {
+        // POST succeeded...
+    })
+    .catch(function (err) {
+        // POST failed...
+    });
+```
+
+### Get the full response instead of just the body
+
+``` js
+var options = {
     method: 'DELETE',
     uri: 'http://my-server/path/to/resource/1234',
-    resolveWithFullResponse: true
+    resolveWithFullResponse: true    //  <---  <---  <---  <---
 };
 
 rp(options)
     .then(function (response) {
         console.log("DELETE succeeded with status %d", response.statusCode);
     })
-    .catch(console.error);
+    .catch(function (err) {
+        // Delete failed...
+    });
 ```
+
+### Get a rejection only if the request failed for technical reasons
+
+``` js
+var options = {
+    uri: 'http://www.google.com/this-page-does-not-exist.html',
+    simple: false    //  <---  <---  <---  <---
+};
+
+rp(options)
+    .then(function (body) {
+        // Request succeeded but might as well be a 404
+        // Usually combined with resolveWithFullResponse = true to check response.statusCode
+    })
+    .catch(function (err) {
+        // Request failed due to technical reasons...
+    });
+```
+
+---
+
+**For more options checkout the [Request docs](https://github.com/request/request#requestoptions-callback).**
+
+---
 
 ## API in Detail
 
@@ -81,7 +175,7 @@ Consider Request-Promise being:
 
 - A Request object
 	- With an [identical API](https://github.com/request/request): `require('request-promise') == require('request')` so to say
-	- However, streaming (e.g. `.pipe(...)`) is not supported. Use the original Request library for that.
+	- However, the **USE OF STREAMS** (e.g. `.pipe(...)`) is **DISCOURAGED** because Request-Promise would grow the memory footprint for large requests unnecessarily high. Use the original Request library for that. You can use both libraries in the same project.
 - Plus some methods on a request call object:
 	- `rp(...).then(...)` or e.g. `rp.post(...).then(...)` which turn `rp(...)` and `rp.post(...)` into promises
 	- `rp(...).catch(...)` or e.g. `rp.del(...).catch(...)` which is the same method as provided by Bluebird promises
@@ -259,6 +353,7 @@ var errors = require('request-promise/errors');
 rp('http://google.com')
 	.catch(errors.StatusCodeError, function (reason) {
         // The server responded with a status codes other than 2xx.
+        // Check reason.response.statusCode.
 	})
     .catch(errors.RequestError, function (reason) {
         // The request failed due to technical reasons.
@@ -366,12 +461,6 @@ The ways to debug the operation of Request-Promise are the same [as described](h
 
 Description forthcoming.
 
-## Migrating from 0.4.x to ^1
-
-If you use Request-Promise also for streaming the response (e.g. with `.pipe(...)`) you need to change the code to use the original Request library for that. Since the API was identical it is just a matter of switching the require statement. BTW, since both libraries can be required in the same project you can easily use Request-Promise for requests that you handle with promises and Request for requests that you handle with streams.
-
-If you don't migrate your code Request-Promise will throw an error if you use `rp(...).pipe(...)` or `rp(...).pipeDest(...)`.
-
 ## Contributing
 
 To set up your development environment:
@@ -389,8 +478,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 ## Change History
 
 - v1.0.0 (upcoming)
-    - **Breaking Change**: Streaming (e.g. the use of `.pipe(...)`) is not supported anymore. The original Request library should be used for that. Both Request-Promise and Request can be used alongside in the same project without interference.
-    - **Minor Braking Change**: Some errors that were previously thrown - e.g. for wrong input parameters - are now passed to the rejected promise instead
+    - **Braking Change**: Some errors that were previously thrown synchronously - e.g. for wrong input parameters - are now passed to the rejected promise instead
       *(Thanks to @josnidhin for suggesting that in [issue #43](https://github.com/request/request-promise/issues/43))*
     - For HEAD requests the headers instead of an empty body is returned (unless `resolveWithFullResponse = true` is used)
       *(Thanks to @zcei for proposing the change in [issue #58](https://github.com/request/request-promise/issues/58))*
@@ -411,7 +499,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
     - Introduced Error types used for the reject reasons (See last part [this section](#rejected-promises-and-the-simple-option))
       *(Thanks to @jakecraige for starting the discussion in [issue #38](https://github.com/request/request-promise/issues/38))*
     - **Minor Braking Change:** The reject reason objects became actual Error objects. However, `typeof reason === 'object'` still holds true and the error objects have the same properties as the previous reason objects. If the reject handler only accesses the properties on the reason object - which is usually the case - no migration is required.
-    - [Added io.js](#support-for-iojs) and node.js 0.12 to the Travis CI build
+    - Added io.js and node.js 0.12 to the Travis CI build
 - v0.3.3 (2015-01-19)
     - Fixed handling possibly unhandled rejections to work with the latest version of Bluebird
       *(Thanks to @slang800 for reporting this in [issue #36](https://github.com/request/request-promise/issues/36))*
