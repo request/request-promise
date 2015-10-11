@@ -514,7 +514,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
-- v1.0.0 (upcoming)
+- v1.0.0 (2015-10-11)
     - **Braking Change**: Some errors that were previously thrown synchronously - e.g. for wrong input parameters - are now passed to the rejected promise instead
       *(Thanks to @josnidhin for suggesting that in [issue #43](https://github.com/request/request-promise/issues/43))*
     - For HEAD requests the headers instead of an empty body is returned (unless `resolveWithFullResponse = true` is used)
