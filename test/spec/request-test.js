@@ -20,12 +20,15 @@ describe('Request-Promise', function () {
         server = http.createServer(function (request, response) {
             (bodyParser.json())(request, response, function () {
                 var path = url.parse(request.url).pathname;
-                var status = parseInt(path.split('/')[1]);
+                var status = parseInt(path.split('?')[0].split('/')[1]);
                 if(isNaN(status)) { status = 555; }
                 if (status === 302) {
                     response.writeHead(status, { location: '/200' });
                     lastResponseBody = '';
                     response.end();
+                } else if (status === 222) {
+                    response.writeHead(status, { 'Content-Type': 'text/html' });
+                    response.end('<html><head></head><body></body></html>');
                 } else {
                     response.writeHead(status, { 'Content-Type': 'text/plain' });
                     var body = (request.method === 'POST' && JSON.stringify(request.body) !== '{}' ? ' - ' + JSON.stringify(request.body) : '');
@@ -1061,76 +1064,159 @@ describe('Request-Promise', function () {
 
     describe('should run the examples', function () {
 
-        it('in the README', function () {
+        it('in the Cheat Sheet section of the README', function () {
 
             this.timeout(10000);
-
-            var options;
 
             return Bluebird.resolve()
                 .then(function () {
 
-                    return rp('http://www.google.com')
-                        .then(function (body) {
-                            expect(body).to.contain('</html>');
+                    return rp('http://localhost:4000/222')
+                        .then(function (htmlString) {
+                            // Process html...
+                            expect(htmlString).to.contain('</html>');
                         })
                         .catch(function (err) {
+                            // Crawling failed...
                             throw err;
                         });
-
-                    // --> 'GET's and displays google.com
 
                 })
                 .then(function () {
 
-                    options = {
-                        uri : 'http://localhost:4000/200',
-                        method : 'POST',
-                        json: true,
-                        body: { some: 'payload' }
+                    var cheerio = require('cheerio'); // Basically jQuery for node.js
+
+                    var options = {
+                        uri: 'http://localhost:4000/222',
+                        transform: function (body) {
+                            return cheerio.load(body);
+                        }
                     };
 
                     return rp(options)
-                        .then(function (body) {
-                            expect(body).to.eql('POST /200 - {"some":"payload"}');
+                        .then(function ($) {
+                            // Process html like you would with jQuery...
+                            expect($('html').length).to.eql(1);
                         })
                         .catch(function (err) {
+                            // Crawling failed or Cheerio choked...
                             throw err;
                         });
-
-                    // --> Displays response from server after post
 
                 })
                 .then(function () {
 
-                    options.transform = function (data) { return data.length; };
+                    // ### GET something from a JSON REST API
+
+                    var options = {
+                        uri: 'http://localhost:4000/200',
+                        qs: {
+                            access_token: 'xxxxx xxxxx' // -> uri + '?access_token=xxxxx%20xxxxx'
+                        },
+                        headers: {
+                            'User-Agent': 'Request-Promise'
+                        },
+                        json: true // Automatically parses the JSON string in the response
+                    };
 
                     return rp(options)
-                        .then(function (body) {
-                            expect(body).to.eql('POST /200 - {"some":"payload"}'.length);
+                        .then(function (repos) {
+                            console.log('User has %d repos', repos.length);
                         })
                         .catch(function (err) {
+                            // API call failed...
                             throw err;
                         });
-
-                    // transform is called just before promise is fulfilled
-                    // --> Displays length of response from server after post
 
                 })
                 .then(function () {
 
-                    // Get full response after DELETE
-                    options = {
+                    // ### POST data to a JSON REST API
+
+                    var options = {
+                        method: 'POST',
+                        uri: 'http://localhost:4000/200',
+                        body: {
+                            some: 'payload'
+                        },
+                        json: true // Automatically stringifies the body to JSON
+                    };
+
+                    return rp(options)
+                        .then(function (parsedBody) {
+                            // POST succeeded...
+                            expect(parsedBody).to.eql('POST /200 - {"some":"payload"}');
+                        })
+                        .catch(function (err) {
+                            // POST failed...
+                            throw err;
+                        });
+
+                })
+                .then(function () {
+
+                    // ### POST like HTML forms do
+
+                    var options = {
+                        method: 'POST',
+                        uri: 'http://localhost:4000/200',
+                        form: {
+                            some: 'payload' // Will be urlencoded
+                        },
+                        headers: {
+                            /* 'content-type': 'application/x-www-form-urlencoded' */ // Set automatically
+                        }
+                    };
+
+                    return rp(options)
+                        .then(function (parsedBody) {
+                            // POST succeeded...
+                        })
+                        .catch(function (err) {
+                            // POST failed...
+                            throw err;
+                        });
+
+                })
+                .then(function () {
+
+                    // ### Get the full response instead of just the body
+
+                    var options = {
                         method: 'DELETE',
                         uri: 'http://localhost:4000/200',
+                        resolveWithFullResponse: true    //  <---  <---  <---  <---
+                    };
+
+                    return rp(options)
+                        .then(function (response) {
+                            console.log("DELETE succeeded with status %d", response.statusCode);
+                            expect(response.statusCode).to.eql(200);
+                        })
+                        .catch(function (err) {
+                            // Delete failed...
+                            throw err;
+                        });
+
+                })
+                .then(function () {
+
+                    // ### Get a rejection only if the request failed for technical reasons
+
+                    var options = {
+                        uri: 'http://localhost:4000/404',
+                        simple: false,    //  <---  <---  <---  <---
                         resolveWithFullResponse: true
                     };
 
                     return rp(options)
                         .then(function (response) {
-                            expect(response.statusCode).to.eql(200);
+                            // Request succeeded but might as well be a 404
+                            // Usually combined with resolveWithFullResponse = true to check response.statusCode
+                            expect(response.statusCode).to.eql(404);
                         })
                         .catch(function (err) {
+                            // Request failed due to technical reasons...
                             throw err;
                         });
 

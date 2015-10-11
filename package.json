@@ -39,6 +39,7 @@
     "chai": "2.2.x",
     "chai-as-promised": "4.3.x",
     "chalk": "^1.1.1",
+    "cheerio": "^0.19.0",
     "continuation-local-storage": "^3.1.4",
     "event-stream": "3.3.x",
     "gulp": "3.8.x",
