@@ -459,7 +459,44 @@ The ways to debug the operation of Request-Promise are the same [as described](h
 
 ## Mocking Request-Promise
 
-Description forthcoming.
+Usually you want to mock the whole request function which is returned by `require('request-promise')`. This is not possible by using a mocking library like [sinon.js](http://sinonjs.org) alone. What you need is a library that ties into the module loader and makes sure that your mock is returned whenever the tested code is calling `require('request-promise')`. [Mockery](https://github.com/mfncooper/mockery) is one of such libraries.
+
+@florianschmidt1994 kindly shared his solution:
+```javascript
+before(function (done) {
+
+    var filename = "fileForResponse";
+    mockery.enable({
+        warnOnReplace: false,
+        warnOnUnregistered: false,
+        useCleanCache: true
+    });
+
+    mockery.registerMock('request-promise', function () {
+        var response = fs.readFileSync(__dirname + '/data/' + filename, 'utf8');
+        return Bluebird.resolve(response.trim());
+    });
+
+    done();
+});
+
+after(function (done) {
+    mockery.disable();
+    mockery.deregisterAll();
+    done();
+});
+
+describe('custom test case', function () {
+    //  Test some function/module/... which uses request-promise
+    //  and it will always receive the predefined "fileForResponse" as data, e.g.:
+    var rp = require('request-promise');
+    rp(...).then(function(data) {
+        // ➞ data is what is in fileForResponse
+    });
+});
+```
+
+Based on that you may now build a more sophisticated mock. [Sinon.js](http://sinonjs.org) may be of help as well.
 
 ## Contributing
 
@@ -486,6 +523,8 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
     - Added experimental support for continuation local storage
       *(Thanks to @silverbp preparing this in [issue #64](https://github.com/request/request-promise/issues/64))*
 	- Added node.js 4 to the Travis CI build
+	- Updated the README
+	  *(Thanks to many people for their feedback in issues [#55](https://github.com/request/request-promise/issues/55) and [#59](https://github.com/request/request-promise/issues/59))*
 - v0.4.3 (2015-07-27)
     - Reduced overhead by just requiring used lodash functions instead of the whole lodash library
       *(Thanks to @luanmuniz for [pull request #54](https://github.com/request/request-promise/pull/54))*
