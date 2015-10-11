@@ -7,9 +7,7 @@
 
 ---
 
-Using io.js? Please read the [support section](#support-for-iojs).
-
-**Users of version 0.2.x please read the [migration instructions](#migrating-from-02x-to-03x)!**
+**Users of version 0.4.x please read the [migration instructions](#migrating-from-04x-to-1)!**
 
 ---
 
@@ -19,17 +17,7 @@ The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Blu
 
 [Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
 
-## Request-Promise is a drop-in replacement for Request
-
-Since version 0.3.0 Request-Promise is not a wrapper around Request anymore. It now adds a `.then(...)` method to the Request prototype and exports the original Request object. This means you can now use all features of Request.
-
-Request-Promise is perfect for replacing callbacks with promises. However, if you want to pipe large quantities of data we recommend using Request for the reason [described below](#can-i-trust-this-module). Both Request and Request-Promise can be required side by side.
-
-See the [migration instructions](#migrating-from-02x-to-03x) for important changes between 0.2.x and 0.3.x. Issues and pull requests for 0.2.x are still welcome.
-
 ## Installation
-
-[![NPM](https://nodei.co/npm/request-promise.png?compact=true)](https://nodei.co/npm/request-promise/)
 
 This module is installed via npm:
 
@@ -39,9 +27,7 @@ npm install request-promise
 
 Request-Promise depends on loosely defined versions of Request and Bluebird. If you want to use specific versions of those modules please install them beforehand.
 
-Node.js version 0.10 and up is supported.
-
-## Examples
+## Cheat Sheet
 
 ``` js
 var rp = require('request-promise');
@@ -95,6 +81,7 @@ Consider Request-Promise being:
 
 - A Request object
 	- With an [identical API](https://github.com/request/request): `require('request-promise') == require('request')` so to say
+	- However, streaming (e.g. `.pipe(...)`) is not supported. Use the original Request library for that.
 - Plus some methods on a request call object:
 	- `rp(...).then(...)` or e.g. `rp.post(...).then(...)` which turn `rp(...)` and `rp.post(...)` into promises
 	- `rp(...).catch(...)` or e.g. `rp.del(...).catch(...)` which is the same method as provided by Bluebird promises
@@ -270,12 +257,12 @@ With version 0.4 the reason objects became Error objects with identical properti
 var errors = require('request-promise/errors');
 
 rp('http://google.com')
-    .catch(errors.RequestError, function (reason) {
-        // Handle a failed request for which Request provided an error...
-        // reason.cause is the Error object Request would pass into a callback.
-	})
 	.catch(errors.StatusCodeError, function (reason) {
-        // Handle responses with status codes other than 2xx...
+        // The server responded with a status codes other than 2xx.
+	})
+    .catch(errors.RequestError, function (reason) {
+        // The request failed due to technical reasons.
+        // reason.cause is the Error object Request would pass into a callback.
 	});
 ```
 
@@ -287,21 +274,21 @@ You can pass a function to `options.transform` to generate a custom fulfillment 
 // Just for fun you could reverse the response body:
 var options = {
 	uri: 'http://google.com',
-    transform: function (body, response) {
+    transform: function (body, response, resolveWithFullResponse) {
         return body.split('').reverse().join('');
     }
 };
 
 rp(options)
     .then(function (reversedBody) {
-        // #@-?
+        // ;D
     });
 
 
 // However, you could also do something useful:
 var $ = require('cheerio'); // Basically jQuery for node.js
 
-function autoParse(body, response) {
+function autoParse(body, response, resolveWithFullResponse) {
     // FIXME: The content type string could contain additional values like the charset.
     if (response.headers['content-type'] === 'application/json') {
         return JSON.parse(body);
@@ -334,6 +321,39 @@ rpap('http://echojs.com')
     });
 ```
 
+The third `resolveWithFullResponse` parameter of the transform function is equivalent to the option passed with the request. This allows to distinguish whether just the transformed body or the whole response shall be returned by the transform function:
+
+``` js
+function reverseBody(body, response, resolveWithFullResponse) {
+    response.body = response.body.split('').reverse().join('');
+    return resolveWithFullResponse ? response : response.body;
+}
+```
+
+## Experimental Support for Continuation Local Storage
+
+Continuation Local Storage (CLS) is a great mechanism for backpacking data along asynchronous call chains that is best explained in [these slides](http://fredkschott.com/post/2014/02/conquering-asynchronous-context-with-cls/). If you want to use CLS you need to install the [continuation-local-storage package](https://www.npmjs.com/package/continuation-local-storage). Request-Promise internally uses the [cls-bluebird package](https://www.npmjs.com/package/cls-bluebird) to enable CLS also within the Bluebird promises.
+
+Just call `rp.bindCLS(ns)` **ONCE** before your first request to activate CLS:
+``` js
+var rp = require('request-promise');
+var cls = require('continuation-local-storage');
+
+var ns = cls.createNamespace('testNS');
+rp.bindCLS(ns);
+
+ns.run(function () {
+    ns.set('value', 'hi');
+
+    rp('http://google.com')
+        .then(function () {
+            console.log(ns.get('value')); // -> hi
+        });
+});
+```
+
+Since the [cls-bluebird package](https://www.npmjs.com/package/cls-bluebird) currently is just a quick and dirty implementation the CLS support is only experimental.
+
 ## Debugging
 
 The ways to debug the operation of Request-Promise are the same [as described](https://github.com/request/request#debugging) for Request. These are:
@@ -342,44 +362,15 @@ The ways to debug the operation of Request-Promise are the same [as described](h
 2. Set `require('request-promise').debug = true` at any time (this does the same thing as #1).
 3. Use the [request-debug module](https://github.com/nylen/request-debug) to view request and response headers and bodies. Instrument Request-Promise with `require('request-debug')(rp);`.
 
-## Migrating from 0.2.x to 0.3.x
+## Mocking Request-Promise
 
-The module was rewritten with great care accompanied by plenty of automated tests. In most cases you can just update Request-Promise and your code will continue to work.
+Description forthcoming.
 
-First and foremost Request-Promise now exposes Request directly. That means the API sticks to that of Request. The only methods and options introduced by Request-Promise are:
+## Migrating from 0.4.x to ^1
 
-- The `.then(...)` method
-- The `.catch(...)` method
-- The `.finally(...)` method
-- The `.promise()` method
-- The `simple` option
-- The `resolveWithFullResponse` option
-- The `transform` option
+If you use Request-Promise also for streaming the response (e.g. with `.pipe(...)`) you need to change the code to use the original Request library for that. Since the API was identical it is just a matter of switching the require statement. BTW, since both libraries can be required in the same project you can easily use Request-Promise for requests that you handle with promises and Request for requests that you handle with streams.
 
-In regard to these methods and options Request-Promise 0.3.x is largely compatible with 0.2.x. All other parts of the API may differ in favor of the original behavior of Request.
-
-### Changes and Removed Quirks
-
-(`rp_02x` and `rp_03x` refer to the function exported by the respective version of Request-Promise.)
-
-- `rp_02x(...)` returned a Bluebird promise. `rp_03x(...)` returns a Request instance with a `.then(...)`, a `.catch(...)`, and a `.finally(...)` method. If you used any Bluebird method other than `.then(...)`, `.catch(...)`, and `.finally(...)` as the **FIRST** method in the promise chain, your code needs a small change to use Request-Promise 0.3.2 and up: Use the [`.promise()` method](#promise---for-advanced-use-cases) to retrieve the full-fledged Bluebird promise. E.g. `rp_02x(...).bind(...)` needs to be changed to `rp_03x(...).promise().bind(...)`
-  Please note that this only applies to the **FIRST method in the chain**. E.g. `rp_03x(...).then(...).spread(...)` is still possible. Only something like `rp_02x(...).spread(...)` needs to be changed to `rp_03x(...).promise().spread(...)`.
-  If, however, you have a large code base in production and making this small change is not an option or you think that exposing another Bluebird method directly on the Request instance would be more convenient for a common use case, please open an issue.
-- The options `simple` and `resolveWithFullResponse` must be of type boolean. If they are of different type Request-Promise 0.3.x will use the defaults. In 0.2.x the behavior for non-boolean values was different.
-- The object passed as the reason of a rejected promise contains an `options` object that differs between both versions. Especially the `method` property is not set if the default (GET) is applied.
-- If you called `rp_02x(...)` without appending a `.then(...)` call occurring errors may have been discarded. Request-Promise 0.3.x may now throw those. However, if you append a `.then(...)` call those errors reject the promise in both versions.
-- `rp_03x.head(...)` throws an exception if the options contain a request body. This is due to Requests original implementation which was not used in Request-Promise 0.2.x.
-- `rp_02x.request` does not exist in Request-Promise 0.3.x since Request is exported directly. (`rp_02x.request === rp_03x`)
-
-## Support for io.js
-
-We added io.js to our Travis CI build and all tests are green. However, they mostly cover the functionality of Request-Promise itself. Barely of Request and Bluebird. At the time of writing Request did but Bluebird didn't add io.js to its build, yet. So please use io.js with care.
-
-## Can I trust this module?
-
-The approx. 120 lines of code – on top of the well tested libraries Request and Bluebird – are covered by over 60 tests producing a test coverage of 100% and beyond. Additionally, the original tests of Request were executed on Request-Promise to ensure that we can call it "a drop-in replacement for Request". So yes, we did our best to make Request-Promise live up to the quality Request and Bluebird are known for.
-
-However, there is one important design detail: Request-Promise passes a callback to each Request call which it uses to resolve or reject the promise. The callback is also registered if you don't use the promise features in a certain request. E.g. you may only use streaming: `rp(...).pipe(...)` As a result, [additional code](https://github.com/request/request/blob/master/request.js#L1026-L1075) is executed that buffers the streamed data and passes it as the response body to the "complete" event. If you stream [large quantities of data](https://github.com/request/request-promise/issues/53) the buffer grows big and that has an impact on your memory footprint. In these cases you can just `var request = require('request');` and use `request` for streaming large quantities of data.
+If you don't migrate your code Request-Promise will throw an error if you use `rp(...).pipe(...)` or `rp(...).pipeDest(...)`.
 
 ## Contributing
 
@@ -397,8 +388,6 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
-### Main Branch
-
 - v1.0.0 (upcoming)
     - **Breaking Change**: Streaming (e.g. the use of `.pipe(...)`) is not supported anymore. The original Request library should be used for that. Both Request-Promise and Request can be used alongside in the same project without interference.
     - **Minor Braking Change**: Some errors that were previously thrown - e.g. for wrong input parameters - are now passed to the rejected promise instead
@@ -408,6 +397,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
     - Extended `transform` function by a third `resolveWithFullResponse` parameter
     - Added experimental support for continuation local storage
       *(Thanks to @silverbp preparing this in [issue #64](https://github.com/request/request-promise/issues/64))*
+	- Added node.js 4 to the Travis CI build
 - v0.4.3 (2015-07-27)
     - Reduced overhead by just requiring used lodash functions instead of the whole lodash library
       *(Thanks to @luanmuniz for [pull request #54](https://github.com/request/request-promise/pull/54))*
@@ -432,21 +422,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 	- Added the `.promise()` method for advanced Bluebird API usage
 	  *(Thanks to @devo-tox for his feedback in [issue #27](https://github.com/request/request-promise/issues/27))*
 - v0.3.0 (2014-11-10)
-	- Carefully rewritten from scratch to make Request-Promise a [drop-in replacement for Request](#request-promise-is-a-drop-in-replacement-for-request)
-
-### Version 0.2.x Branch
-
-- v0.2.7 (2014-11-17)
-	- Fixed http method shortcuts like `rp.get(...)` when used with passing an options object
-	  *(Thanks to @hjpbarcelos for reporting this in [issue #29](https://github.com/request/request-promise/issues/29))*
-- v0.2.6 (2014-11-09)
-	- When calling `rp.defaults(...)` the passed `resolveWithFullResponse` option is not always overwritten by the default anymore.
-	- The function passed as the `transform` option now also gets the full response as the second parameter. The new signature is: `function (body, response) { }`
-	  *(Thanks to @khankuan for his feedback in [issue #24](https://github.com/request/request-promise/issues/24))*
-	- If the transform function throws an exception it is caught and the promise is rejected with it.
-- v0.2.5 (2014-11-06)
-	- The Request instance which is wrapped by Request-Promise is exposed as `rp.request`.
-	  *(Thanks to @hjpbarcelos for his feedback in [issue #23](https://github.com/request/request-promise/issues/23))*
+	- Carefully rewritten from scratch to make Request-Promise a drop-in replacement for Request
 
 ## MIT Licensed
 
