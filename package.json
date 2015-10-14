@@ -51,6 +51,9 @@
     "rimraf": "2.3.x",
     "run-sequence": "1.0.x"
   },
+  "peerDependencies": {
+    "continuation-local-storage": "~3"
+  },
   "engines": {
     "node": ">=0.10.0"
   }
