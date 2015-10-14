@@ -514,6 +514,8 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v1.0.1 (2015-10-14)
+    - Fixed a npm warning by marking continuation-local-storage as a peer dependency
 - v1.0.0 (2015-10-11)
     - **Braking Change**: Some errors that were previously thrown synchronously - e.g. for wrong input parameters - are now passed to the rejected promise instead
       *(Thanks to @josnidhin for suggesting that in [issue #43](https://github.com/request/request-promise/issues/43))*
