@@ -517,9 +517,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 - v1.0.1 (2015-10-14)
     - Fixed a npm warning by marking continuation-local-storage as a peer dependency
 - v1.0.0 (2015-10-11)
-    - **Braking Change**: Some errors that were previously thrown synchronously - e.g. for wrong input parameters - are now passed to the rejected promise instead
+    - **Breaking Change**: Some errors that were previously thrown synchronously - e.g. for wrong input parameters - are now passed to the rejected promise instead
       *(Thanks to @josnidhin for suggesting that in [issue #43](https://github.com/request/request-promise/issues/43))*
-    - **Braking Change**: Request-Promise does not load its own Bluebird prototype anymore. If you use Bluebird in your project and altered the prototype then Request-Promise may use your altered Blurbird prototype internally.
+    - **Breaking Change**: Request-Promise does not load its own Bluebird prototype anymore. If you use Bluebird in your project and altered the prototype then Request-Promise may use your altered Blurbird prototype internally.
     - For HEAD requests the headers instead of an empty body is returned (unless `resolveWithFullResponse = true` is used)
       *(Thanks to @zcei for proposing the change in [issue #58](https://github.com/request/request-promise/issues/58))*
     - Extended `transform` function by a third `resolveWithFullResponse` parameter
@@ -540,7 +540,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 - v0.4.0 (2015-02-08)
     - Introduced Error types used for the reject reasons (See last part [this section](#rejected-promises-and-the-simple-option))
       *(Thanks to @jakecraige for starting the discussion in [issue #38](https://github.com/request/request-promise/issues/38))*
-    - **Minor Braking Change:** The reject reason objects became actual Error objects. However, `typeof reason === 'object'` still holds true and the error objects have the same properties as the previous reason objects. If the reject handler only accesses the properties on the reason object - which is usually the case - no migration is required.
+    - **Minor Breaking Change:** The reject reason objects became actual Error objects. However, `typeof reason === 'object'` still holds true and the error objects have the same properties as the previous reason objects. If the reject handler only accesses the properties on the reason object - which is usually the case - no migration is required.
     - Added io.js and node.js 0.12 to the Travis CI build
 - v0.3.3 (2015-01-19)
     - Fixed handling possibly unhandled rejections to work with the latest version of Bluebird
