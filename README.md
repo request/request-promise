@@ -514,6 +514,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v1.0.2 (2015-10-22)
+    - Removed continuation-local-storage from peer dependencies as it was unnecessary
+      *(Thanks to @mrhyde for working on a better solution discussed in [issue #70](https://github.com/request/request-promise/issues/70))*
 - v1.0.1 (2015-10-14)
     - Fixed a npm warning by marking continuation-local-storage as a peer dependency
 - v1.0.0 (2015-10-11)
