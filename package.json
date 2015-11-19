@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "bluebird": "^2.3",
-    "cls-bluebird": "^1.0.1",
     "lodash": "^3.10.0",
     "request": "^2.34"
   },
@@ -40,6 +39,7 @@
     "chai-as-promised": "5.1.x",
     "chalk": "^1.1.1",
     "cheerio": "^0.19.0",
+    "cls-bluebird": "^1.0.1",
     "continuation-local-storage": "^3.1.4",
     "event-stream": "3.3.x",
     "gulp": "3.9.x",
