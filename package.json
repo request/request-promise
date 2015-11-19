@@ -47,6 +47,7 @@
     "gulp-istanbul": "0.10.x",
     "gulp-jshint": "1.12.x",
     "gulp-mocha": "2.2.x",
+    "jshint": "2.8.0",
     "jshint-stylish": "2.1.x",
     "rimraf": "2.4.x",
     "run-sequence": "1.1.x"
