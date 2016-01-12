@@ -6,6 +6,7 @@ node_js:
   - "0.12"
   - "iojs"
   - "4"
+  - "5"
 
 env:
   - V_REQUEST=2.34.0 V_BLUEBIRD=2.3.0
