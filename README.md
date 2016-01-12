@@ -514,11 +514,16 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v2.0.0 (2016-01-12)
+    - **Breaking Change**: Removed explicit `cls-bluebird` dependency which has to be installed by the user now
+      *(Thanks to @hildjj for his [pull request #75](https://github.com/request/request-promise/pull/75))*
+	- `npm shrinkwrap` now works for `npm@3` users who don't use `continuation-local-storage`
+	  *(Thanks to @toboid and @rstacruz for reporting the issue in [issue #70](https://github.com/request/request-promise/issues/70) and [issue #82](https://github.com/request/request-promise/issues/82))*
 - v1.0.2 (2015-10-22)
-    - Removed continuation-local-storage from peer dependencies as it was unnecessary
+    - Removed `continuation-local-storage` from peer dependencies as it was unnecessary
       *(Thanks to @mrhyde for working on a better solution discussed in [issue #70](https://github.com/request/request-promise/issues/70))*
 - v1.0.1 (2015-10-14)
-    - Fixed a npm warning by marking continuation-local-storage as a peer dependency
+    - Fixed a npm warning by marking `continuation-local-storage` as a peer dependency
 - v1.0.0 (2015-10-11)
     - **Breaking Change**: Some errors that were previously thrown synchronously - e.g. for wrong input parameters - are now passed to the rejected promise instead
       *(Thanks to @josnidhin for suggesting that in [issue #43](https://github.com/request/request-promise/issues/43))*
