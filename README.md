@@ -186,7 +186,7 @@ Consider Request-Promise being:
 	- `resolveWithFullResponse` which is a boolean to set whether the promise should be resolve with the full response or just the response body
 	- `transform` which takes a function to transform the response into a custom value with which the promise is resolved
 
-The objects returned by request calls like `rp(...)` or e.g. `rp.post(...)` are regular Promises/A+ compliant promises and can be assimilated by any compatible promise library. 
+The objects returned by request calls like `rp(...)` or e.g. `rp.post(...)` are regular Promises/A+ compliant promises and can be assimilated by any compatible promise library.
 
 The methods `.then(...)`, `.catch(...)`, and `.finally(...)` - which you can call on the request call objects - return a full-fledged Bluebird promise. That means you have the full [Bluebird API](https://github.com/petkaantonov/bluebird/blob/master/API.md) available for further chaining. E.g.: `rp(...).then(...).spread(...)` If, however, you need a method other than `.then(...)`, `.catch(...)`, or `.finally(...)` to be **FIRST** in the chain, use `.promise()`: `rp(...).promise().bind(...).then(...)`
 
@@ -427,7 +427,7 @@ function reverseBody(body, response, resolveWithFullResponse) {
 
 ## Experimental Support for Continuation Local Storage
 
-Continuation Local Storage (CLS) is a great mechanism for backpacking data along asynchronous call chains that is best explained in [these slides](http://fredkschott.com/post/2014/02/conquering-asynchronous-context-with-cls/). If you want to use CLS you need to install the [continuation-local-storage package](https://www.npmjs.com/package/continuation-local-storage). Request-Promise internally uses the [cls-bluebird package](https://www.npmjs.com/package/cls-bluebird) to enable CLS also within the Bluebird promises.
+Continuation Local Storage (CLS) is a great mechanism for backpacking data along asynchronous call chains that is best explained in [these slides](http://fredkschott.com/post/2014/02/conquering-asynchronous-context-with-cls/). If you want to use CLS you need to install the [continuation-local-storage package](https://www.npmjs.com/package/continuation-local-storage) and the [cls-bluebird package](https://www.npmjs.com/package/cls-bluebird).
 
 Just call `rp.bindCLS(ns)` **ONCE** before your first request to activate CLS:
 ``` js
