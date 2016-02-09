@@ -1,6 +1,6 @@
 'use strict';
 
-var rp = require('../../../lib/rp.js');
+var rp = require('../../../lib/experimental.js');
 var cls = require('continuation-local-storage');
 
 
