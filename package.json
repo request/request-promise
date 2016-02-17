@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "bluebird": "^2.3",
-    "lodash": "^3.10.0",
+    "lodash": "^4.5.0",
     "request": "^2.34"
   },
   "devDependencies": {
