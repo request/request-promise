@@ -514,6 +514,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v2.0.1 (2016-02-17)
+    - Updated `lodash` to v4
+      *(Thanks to @ratson for [pull request #94](https://github.com/request/request-promise/pull/94))*
 - v2.0.0 (2016-01-12)
     - **Breaking Change**: Removed explicit `cls-bluebird` dependency which has to be installed by the user now
       *(Thanks to @hildjj for his [pull request #75](https://github.com/request/request-promise/pull/75))*
