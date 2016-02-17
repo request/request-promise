@@ -1008,7 +1008,7 @@ describe('Request-Promise', function () {
 
             childProcess.exec('node ' + path.join(__dirname, '../fixtures/require/afterwards.js'), function (err, stdout, stderr) {
                 try {
-                    expect(stdout).to.contain('rp: true, request: true');
+                    expect(stdout, 'Actual stdout: ' + stdout).to.contain('rp: true, request: true');
                     done();
                 } catch (e) {
                     done(e);
@@ -1021,7 +1021,7 @@ describe('Request-Promise', function () {
 
             childProcess.exec('node ' + path.join(__dirname, '../fixtures/require/beforehand.js'), function (err, stdout, stderr) {
                 try {
-                    expect(stdout).to.contain('request: true, rp: true');
+                    expect(stdout, 'Actual stdout: ' + stdout).to.contain('request: true, rp: true');
                     done();
                 } catch (e) {
                     done(e);
@@ -1034,7 +1034,7 @@ describe('Request-Promise', function () {
 
             childProcess.exec('node ' + path.join(__dirname, '../fixtures/require/beforehandAndAfterwards.js'), function (err, stdout, stderr) {
                 try {
-                    expect(stdout).to.contain('request1: true, rp: true, request2: true');
+                    expect(stdout, 'Actual stdout: ' + stdout).to.contain('request1: true, rp: true, request2: true');
                     done();
                 } catch (e) {
                     done(e);
@@ -1051,7 +1051,7 @@ describe('Request-Promise', function () {
 
             childProcess.exec('node ' + path.join(__dirname, '../fixtures/cls/single-namespace.js'), function (err, stdout, stderr) {
                 try {
-                    expect(stdout).to.contain('2\n');
+                    expect(stdout, 'Actual stdout: ' + stdout).to.contain('2\n');
                     done();
                 } catch (e) {
                     done(e);
