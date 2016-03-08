@@ -231,15 +231,17 @@ rp('http://google.com')
     .then(null, handleError);
 
 
-// By the way, this:
+// However, this:
 rp('http://google.com')
     .then(process)
     .catch(handleError);
 
-// ... is equivalent to:
+// ... is safer than:
 rp('http://google.com')
     .then(process, handleError);
 ```
+
+For more info on `.then(process).catch(handleError)` versus `.then(process, handleError)`, see Bluebird docs on [promise anti-patterns](http://bluebirdjs.com/docs/anti-patterns.html#the-.then).
 
 ### .finally(onFinished)
 
