@@ -31,7 +31,7 @@
   "dependencies": {
     "bluebird": "^2.3",
     "lodash": "^4.5.0",
-    "request": "^2.34"
+    "request": "^2.69.0"
   },
   "devDependencies": {
     "body-parser": "1.15.x",
