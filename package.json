@@ -29,7 +29,7 @@
     "test": "./node_modules/.bin/gulp ci"
   },
   "dependencies": {
-    "bluebird": "^2.3",
+    "bluebird": "^3.3",
     "lodash": "^4.5.0",
     "request": "^2.34"
   },
