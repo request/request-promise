@@ -9,11 +9,9 @@ node_js:
   - "5"
 
 env:
-  - V_REQUEST=2.34.0 V_BLUEBIRD=2.3.0
-  - V_REQUEST=latest V_BLUEBIRD=latest
+  - V_REQUEST=2.34.0
+  - V_REQUEST=latest
 
 before_script:
   - npm uninstall request
-  - npm uninstall bluebird
   - npm install request@$V_REQUEST
-  - npm install bluebird@$V_BLUEBIRD
