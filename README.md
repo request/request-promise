@@ -11,6 +11,14 @@ The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Blu
 
 [Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
 
+---
+
+## Migration from v2 to v3
+
+Request-Promise v3 includes the update of Bluebird from v2 to v3. This won't make a difference for simple use cases. However, if you use advanced Promise chains starting with the Promise returned by Request-Promise, please check [Bluebird's new features and changes](http://bluebirdjs.com/docs/new-in-bluebird-3.html).
+
+---
+
 ## Installation
 
 This module is installed via npm:
@@ -516,6 +524,12 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v3.0.0 (2016-03-29)
+    - **Breaking Change**: Updated `bluebird` to v3
+      *(Thanks to @BrandonSmith for [pull request #103](https://github.com/request/request-promise/pull/103))*
+    - Updated `lodash` to v4.6
+    - Improved README in regard to `.catch(...)` best practice
+      *(Thanks to @RebootJeff for [pull request #98](https://github.com/request/request-promise/pull/98))*
 - v2.0.1 (2016-02-17)
     - Updated `lodash` to v4
       *(Thanks to @ratson for [pull request #94](https://github.com/request/request-promise/pull/94))*
@@ -532,7 +546,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 - v1.0.0 (2015-10-11)
     - **Breaking Change**: Some errors that were previously thrown synchronously - e.g. for wrong input parameters - are now passed to the rejected promise instead
       *(Thanks to @josnidhin for suggesting that in [issue #43](https://github.com/request/request-promise/issues/43))*
-    - **Breaking Change**: Request-Promise does not load its own Bluebird prototype anymore. If you use Bluebird in your project and altered the prototype then Request-Promise may use your altered Blurbird prototype internally.
+    - **Breaking Change**: Request-Promise does not load its own Bluebird prototype anymore. If you use Bluebird in your project and altered the prototype then Request-Promise may use your altered Bluebird prototype internally.
     - For HEAD requests the headers instead of an empty body is returned (unless `resolveWithFullResponse = true` is used)
       *(Thanks to @zcei for proposing the change in [issue #58](https://github.com/request/request-promise/issues/58))*
     - Extended `transform` function by a third `resolveWithFullResponse` parameter
