@@ -11,14 +11,6 @@ The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Blu
 
 [Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
 
----
-
-## Migration from v2 to v3
-
-Request-Promise v3 includes the update of Bluebird from v2 to v3. This won't make a difference for simple use cases. However, if you use advanced Promise chains starting with the Promise returned by Request-Promise, please check [Bluebird's new features and changes](http://bluebirdjs.com/docs/new-in-bluebird-3.html).
-
----
-
 ## Installation
 
 This module is installed via npm:
@@ -524,7 +516,7 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
-- v3.0.0 (2016-03-29)
+- v3.0.0 (upcoming)
     - **Breaking Change**: Updated `bluebird` to v3
       *(Thanks to @BrandonSmith for [pull request #103](https://github.com/request/request-promise/pull/103))*
     - Updated `lodash` to v4.6
