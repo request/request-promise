@@ -183,7 +183,7 @@ Consider Request-Promise being:
 
 - A Request object
 	- With an [identical API](https://github.com/request/request): `require('request-promise') == require('request')` so to say
-	- However, the **USE OF STREAMS** (e.g. `.pipe(...)`) is **DISCOURAGED** because Request-Promise would grow the memory footprint for large requests unnecessarily high. Use the original Request library for that. You can use both libraries in the same project.
+	- However, **STREAMING THE RESPONSE** (e.g. `.pipe(...)`) is **DISCOURAGED** because Request-Promise would grow the memory footprint for large requests unnecessarily high. Use the original Request library for that. You can use both libraries in the same project.
 - Plus some methods on a request call object:
 	- `rp(...).then(...)` or e.g. `rp.post(...).then(...)` which turn `rp(...)` and `rp.post(...)` into promises
 	- `rp(...).catch(...)` or e.g. `rp.del(...).catch(...)` which is the same method as provided by Bluebird promises
