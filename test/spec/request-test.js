@@ -341,7 +341,14 @@ describe('Request-Promise', function () {
                 }
             };
 
-            return expect(rp(options)).to.be.rejected;
+            return rp(options)
+                .then(function () {
+                    throw new Error('Request should not have been fulfilled!');
+                })
+                .catch(function (err) {
+                    expect(err instanceof errors.TransformError).to.eql(true);
+                    expect(err.cause.message).to.eql('Transform rejected!');
+                });
 
         });
 
@@ -497,7 +504,14 @@ describe('Request-Promise', function () {
                     }
                 };
 
-                return expect(rp(options)).to.be.rejected;
+                return rp(options)
+                    .then(function () {
+                        throw new Error('Request should not have been fulfilled!');
+                    })
+                    .catch(function (err) {
+                        expect(err instanceof errors.TransformError).to.eql(true);
+                        expect(err.cause.message).to.eql('Transform rejected!');
+                    });
 
             });
 
