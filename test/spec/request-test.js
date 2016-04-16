@@ -421,6 +421,173 @@ describe('Request-Promise', function () {
 
         });
 
+        describe('on non-200 responses in simple mode', function () {
+
+            it('that processes the body', function () {
+
+                var options = {
+                    url: 'http://localhost:4000/404',
+                    transform: function (body) {
+                        return body.split('').reverse().join('');
+                    }
+                };
+
+                return rp(options)
+                    .then(function () {
+                        throw new Error('Request should not have been fulfilled!');
+                    })
+                    .catch(function (err) {
+                        expect(err.response).to.eql('404/ TEG');
+                    });
+
+            });
+
+            it('that processes the full response', function () {
+
+                var options = {
+                    url: 'http://localhost:4000/404',
+                    transform: function (body, httpResponse) {
+                        return httpResponse.body.split('').reverse().join('');
+                    }
+                };
+
+                return rp(options)
+                    .then(function () {
+                        throw new Error('Request should not have been fulfilled!');
+                    })
+                    .catch(function (err) {
+                        expect(err.response).to.eql('404/ TEG');
+                    });
+
+            });
+
+            it('that returns a promise', function () {
+
+                var options = {
+                    url: 'http://localhost:4000/404',
+                    transform: function (body) {
+                        return new Bluebird(function (resolve) {
+                            setTimeout(function () {
+                                resolve(body.split('').reverse().join(''));
+                            });
+                        });
+                    }
+                };
+
+                return rp(options)
+                    .then(function () {
+                        throw new Error('Request should not have been fulfilled!');
+                    })
+                    .catch(function (err) {
+                        expect(err.response).to.eql('404/ TEG');
+                    });
+
+            });
+
+            it('that returns a rejected promise', function () {
+
+                var options = {
+                    url: 'http://localhost:4000/404',
+                    transform: function (body) {
+                        return new Bluebird(function (resolve, reject) {
+                            setTimeout(function () {
+                                reject(new Error('Transform rejected!'));
+                            });
+                        });
+                    }
+                };
+
+                return expect(rp(options)).to.be.rejected;
+
+            });
+
+            it('that throws an exception', function () {
+
+                var cause = new Error('Transform failed!');
+
+                var options = {
+                    url: 'http://localhost:4000/404',
+                    transform: function (body) {
+                        throw cause;
+                    }
+                };
+
+                var expectedOptions = {
+                    url: 'http://localhost:4000/404',
+                    simple: true,
+                    resolveWithFullResponse: false,
+                    transform: options.transform
+                };
+
+                return rp(options)
+                    .then(function () {
+                        throw new Error('Request should not have been fulfilled!');
+                    })
+                    .catch(function (err) {
+                        expect(err instanceof errors.TransformError).to.eql(true);
+                        expect(err.name).to.eql('TransformError');
+                        expect(err.message).to.eql('Error: Transform failed!');
+                        expect(err.cause).to.eql(cause);
+                        expect(err.error).to.eql(cause);
+                        delete err.options.callback; // Even out Request version differences.
+                        expect(err.options).to.eql(expectedOptions);
+                        expect(err.response).to.be.an('object');
+                        expect(err.response.body).to.eql('GET /404');
+                        expect(err.response.statusCode).to.eql(404);
+                    });
+
+            });
+
+            it('not if options.transform is not a function', function () {
+
+                var options = {
+                    url: 'http://localhost:4000/404',
+                    transform: {}
+                };
+
+                return rp(options)
+                    .then(function () {
+                        throw new Error('Request should not have been fulfilled!');
+                    })
+                    .catch(function (err) {
+                        expect(err.response.body).to.eql('GET /404');
+                    });
+
+            });
+
+            it('for HEAD by default', function () {
+
+                return rp.head('http://localhost:4000/404')
+                    .then(function () {
+                        throw new Error('Request should not have been fulfilled!');
+                    })
+                    .catch(function (err) {
+                        expect(err.response['content-type']).to.eql('text/plain');
+                    });
+
+            });
+
+            it('but still letting to overwrite the default transform for HEAD', function () {
+
+                var options = {
+                    url: 'http://localhost:4000/404',
+                    transform: function () {
+                        return 'test';
+                    }
+                };
+
+                return rp.head(options)
+                    .then(function () {
+                        throw new Error('Request should not have been fulfilled!');
+                    })
+                    .catch(function (err) {
+                        expect(err.response).to.eql('test');
+                    });
+
+            });
+
+        });
+
     });
 
     describe('should cover the HTTP method shortcuts', function () {
