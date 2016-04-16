@@ -347,11 +347,20 @@ describe('Request-Promise', function () {
 
         it('that throws an exception', function () {
 
+            var cause = new Error('Transform failed!');
+
             var options = {
                 url: 'http://localhost:4000/200',
                 transform: function (body) {
-                    throw new Error('Transform failed!');
+                    throw cause;
                 }
+            };
+
+            var expectedOptions = {
+                url: 'http://localhost:4000/200',
+                simple: true,
+                resolveWithFullResponse: false,
+                transform: options.transform
             };
 
             return rp(options)
@@ -359,7 +368,16 @@ describe('Request-Promise', function () {
                     throw new Error('Request should not have been fulfilled!');
                 })
                 .catch(function (err) {
-                    expect(err.message).to.eql('Transform failed!');
+                    expect(err instanceof errors.TransformError).to.eql(true);
+                    expect(err.name).to.eql('TransformError');
+                    expect(err.message).to.eql('Error: Transform failed!');
+                    expect(err.cause).to.eql(cause);
+                    expect(err.error).to.eql(cause);
+                    delete err.options.callback; // Even out Request version differences.
+                    expect(err.options).to.eql(expectedOptions);
+                    expect(err.response).to.be.an('object');
+                    expect(err.response.body).to.eql('GET /200');
+                    expect(err.response.statusCode).to.eql(200);
                 });
 
         });
