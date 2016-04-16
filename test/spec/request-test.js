@@ -172,7 +172,7 @@ describe('Request-Promise', function () {
                     expect(reason instanceof errors.StatusCodeError).to.eql(true);
                     expect(reason.name).to.eql('StatusCodeError');
                     expect(reason.statusCode).to.eql(404);
-                    expect(reason.message).to.eql('404 - GET /404');
+                    expect(reason.message).to.eql('404 - "GET /404"');
 
                     throw reason; // Testing Bluebird's catch by type
                 })
