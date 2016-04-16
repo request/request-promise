@@ -5,11 +5,28 @@
 
 # Request-Promise
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/request/request-promise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Build Status](https://travis-ci.org/request/request-promise.svg?branch=master)](https://travis-ci.org/request/request-promise) [![Coverage Status](https://coveralls.io/repos/request/request-promise/badge.svg?branch=master&service=github)](https://coveralls.io/github/request/request-promise?branch=master) [![Dependency Status](https://david-dm.org/request/request-promise.svg)](https://david-dm.org/request/request-promise)
+[![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/request/request-promise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[![Build Status](https://img.shields.io/travis/request/request-promise/master.svg?style=flat-square)](https://travis-ci.org/request/request-promise)
+[![Coverage Status](https://img.shields.io/coveralls/request/request-promise.svg?style=flat-square)](https://coveralls.io/r/request/request-promise)
+[![Dependency Status](https://img.shields.io/david/request/request-promise.svg?style=flat-square)](https://david-dm.org/request/request-promise)
+[![Known Vulnerabilities](https://snyk.io/test/npm/request-promise/badge.svg?style=flat-square)](https://snyk.io/test/npm/request-promise)
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
 
 [Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
+
+---
+
+## Migration from v2 to v3
+
+1. The handling of the `transform` function got overhauled. This has two effects:
+    - `StatusCodeError.response` is the transformed instead of the original response now. This error is thrown for non-2xx responses when `options.simple` is `true` (default). Please update your `transform` functions to also cover the transformation of non-2xx responses. To get the old behavior you may add `if (!(/^2/.test('' + response.statusCode))) { return resolveWithFullResponse ? response : body; }` to the first line of your `transform` functions that are used for requests with `options.simple === true`. However, you may prefer updating your `transform` functions to being able to transform 2xx as well as non-2xx responses because this decouples their implementation from the use of the `simple` option when doing requests.
+    - If a transform operation throws an error, the request will be rejected with a `TransformError`. Its `cause` attribute contains the error thrown by the transform operation. Previously, the request was rejected directly with the error thrown by the transform operation. Wrapping it into a `TransformError` makes the error handling easier.
+
+2. Bluebird got updated from v2 to v3. This won't make a difference for most use cases. However, if you use advanced Promise chains starting with the Promise returned by Request-Promise, please check [Bluebird's new features and changes](http://bluebirdjs.com/docs/new-in-bluebird-3.html).
+
+---
 
 ## Installation
 
@@ -355,7 +372,7 @@ var errors = require('request-promise/errors');
 rp('http://google.com')
 	.catch(errors.StatusCodeError, function (reason) {
         // The server responded with a status codes other than 2xx.
-        // Check reason.response.statusCode.
+        // Check reason.statusCode
 	})
     .catch(errors.RequestError, function (reason) {
         // The request failed due to technical reasons.
@@ -425,6 +442,42 @@ function reverseBody(body, response, resolveWithFullResponse) {
     response.body = response.body.split('').reverse().join('');
     return resolveWithFullResponse ? response : response.body;
 }
+```
+
+As of Request-Promise v3 the transform function is ALWAYS executed for non-2xx responses. When `options.simple` is set to `true` (default) then non-2xx responses are rejected with a `StatusCodeError`. In this case the error contains the transformed response:
+
+``` js
+var options = {
+	uri: 'http://the-server.com/will-return/404',
+	simple: true,
+    transform: function (body, response, resolveWithFullResponse) { /* ... */ }
+};
+
+rp(options)
+    .catch(errors.StatusCodeError, function (reason) {
+        // reason.response is the transformed response
+    });
+```
+
+#### Error handling
+
+If the transform operation fails (throws an error) the request will be rejected with a `TransformError`:
+
+``` js
+var errors = require('request-promise/errors');
+
+var options = {
+	uri: 'http://google.com',
+    transform: function (body, response, resolveWithFullResponse) {
+        throw new Error('Transform failed!');
+    }
+};
+
+rp(options)
+    .catch(errors.TransformError, function (reason) {
+        console.log(reason.cause.message); // => Transform failed!
+        // reason.response is the original response for which the transform operation failed
+    });
 ```
 
 ## Experimental Support for Continuation Local Storage
@@ -516,9 +569,12 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
-- v3.0.0 (upcoming)
+- v3.0.0 (2016-04-16)
+    - **Breaking Change**: Overhauled the handling of the `transform` function
+      *(Thanks to @Limess for explaining the need in [issue #86](https://github.com/request/request-promise/issues/86))*
     - **Breaking Change**: Updated `bluebird` to v3
       *(Thanks to @BrandonSmith for [pull request #103](https://github.com/request/request-promise/pull/103))*
+    - Improved `StatusCodeError.message`
     - Updated `lodash` to v4.6
     - Improved README in regard to `.catch(...)` best practice
       *(Thanks to @RebootJeff for [pull request #98](https://github.com/request/request-promise/pull/98))*

@@ -1,6 +1,6 @@
 {
   "name": "request-promise",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "The world-famous HTTP client 'Request' now Promises/A+ compliant. Powered by Bluebird.",
   "keywords": [
     "xhr",
