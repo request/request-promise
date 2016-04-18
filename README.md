@@ -482,11 +482,11 @@ rp(options)
 
 ## Experimental Support for Continuation Local Storage
 
-Continuation Local Storage (CLS) is a great mechanism for backpacking data along asynchronous call chains that is best explained in [these slides](http://fredkschott.com/post/2014/02/conquering-asynchronous-context-with-cls/). If you want to use CLS you need to install the [continuation-local-storage package](https://www.npmjs.com/package/continuation-local-storage) and the [cls-bluebird package](https://www.npmjs.com/package/cls-bluebird).
+Continuation Local Storage (CLS) is a great mechanism for backpacking data along asynchronous call chains that is best explained in [these slides](http://fredkschott.com/post/2014/02/conquering-asynchronous-context-with-cls/). If you want to use CLS you need to install the [continuation-local-storage package](https://www.npmjs.com/package/continuation-local-storage) and the [cls-bluebird package](https://www.npmjs.com/package/cls-bluebird). Also, include `request-promise/lib/experimental` instead of `request-promise`.   
 
 Just call `rp.bindCLS(ns)` **ONCE** before your first request to activate CLS:
 ``` js
-var rp = require('request-promise');
+var rp = require('request-promise/lib/experimental');
 var cls = require('continuation-local-storage');
 
 var ns = cls.createNamespace('testNS');
