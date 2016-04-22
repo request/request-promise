@@ -5,12 +5,7 @@
 
 # Request-Promise
 
-[![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/request/request-promise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[![Build Status](https://img.shields.io/travis/request/request-promise/master.svg?style=flat-square)](https://travis-ci.org/request/request-promise)
-[![Coverage Status](https://img.shields.io/coveralls/request/request-promise.svg?style=flat-square)](https://coveralls.io/r/request/request-promise)
-[![Dependency Status](https://img.shields.io/david/request/request-promise.svg?style=flat-square)](https://david-dm.org/request/request-promise)
-[![Known Vulnerabilities](https://snyk.io/test/npm/request-promise/badge.svg?style=flat-square)](https://snyk.io/test/npm/request-promise)
+[![Build Status](https://travis-ci.org/practo/request-promise.svg?branch=master)](https://travis-ci.org/practo/request-promise)
 
 The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
 
