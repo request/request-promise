@@ -26,7 +26,7 @@
     "url": "https://github.com/request/request-promise.git"
   },
   "scripts": {
-    "test": "./node_modules/.bin/gulp ci"
+    "test": "./node_modules/.bin/gulp ci-no-cov"
   },
   "dependencies": {
     "bluebird": "^3.3",
