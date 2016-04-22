@@ -26,12 +26,12 @@
     "url": "https://github.com/request/request-promise.git"
   },
   "scripts": {
-    "test": "./node_modules/.bin/gulp ci"
+    "test": "./node_modules/.bin/gulp ci-no-cov"
   },
   "dependencies": {
     "bluebird": "^3.3",
     "lodash": "^4.6.1",
-    "request": "^2.34"
+    "request": "git://github.com/practo/request.git#v2.69.1-practo"
   },
   "devDependencies": {
     "body-parser": "1.15.x",
