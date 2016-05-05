@@ -29,9 +29,10 @@
     "test": "./node_modules/.bin/gulp ci"
   },
   "dependencies": {
+    "@request/api": "^0.6.0",
+    "@request/client": "^0.1.0",
     "bluebird": "^3.3",
-    "lodash": "^4.6.1",
-    "request": "^2.34"
+    "lodash": "^4.6.1"
   },
   "devDependencies": {
     "body-parser": "1.15.x",
