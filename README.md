@@ -102,10 +102,14 @@ rp(options)
 
 ### POST data to a JSON REST API
 
+Set option.body to data, and json:true to encode the body as JSON. See below
+for HTML forms.
+
+
 ``` js
 var options = {
     method: 'POST',
-    uri: 'http://posttestserver.com/post.php',
+    uri: 'http://api.posttestserver.com/post',
     body: {
         some: 'payload'
     },
@@ -122,6 +126,8 @@ rp(options)
 ```
 
 ### POST like HTML forms do
+
+Set option.form to encode the body as HTML form
 
 ``` js
 var options = {
