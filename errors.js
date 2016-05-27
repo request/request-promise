@@ -1,1 +1,3 @@
-module.exports = require('./lib/errors.js');
+'use strict';
+
+module.exports = require('../promise-core/errors');
