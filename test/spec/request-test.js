@@ -1389,7 +1389,6 @@ describe('Request-Promise', function () {
 
                     return rp(options)
                         .then(function (response) {
-                            console.log("DELETE succeeded with status %d", response.statusCode);
                             expect(response.statusCode).to.eql(200);
                         })
                         .catch(function (err) {
@@ -1420,9 +1419,7 @@ describe('Request-Promise', function () {
                         });
 
                 });
-
+        
         });
-
     });
-
 });
