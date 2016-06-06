@@ -32,7 +32,7 @@
     "bluebird": "^3.3",
     "lodash": "^4.6.1",
     "memory-cache": "^0.1.5",
-    "q": "^1.4.1",
+    "moment": "^2.13.0",
     "request": "^2.34"
   },
   "devDependencies": {
@@ -52,8 +52,7 @@
     "jshint": "2.9.x",
     "jshint-stylish": "2.1.x",
     "rimraf": "2.5.x",
-    "run-sequence": "1.1.x",
-    "moment": "^2.13.0"
+    "run-sequence": "1.1.x"
   },
   "engines": {
     "node": ">=0.10.0"
