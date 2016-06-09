@@ -203,8 +203,8 @@ Consider Request-Promise being:
 	- `rp(...).finally(...)` or e.g. `rp.put(...).finally(...)` which is the same method as provided by Bluebird promises
 	- `rp(...).promise()` or e.g. `rp.head(...).promise()` which returns the underlying promise so you can access the full [Bluebird API](https://github.com/petkaantonov/bluebird/blob/master/API.md)
 - Plus some additional options:
-	- `simple` which is a boolean to set whether status codes other than 2xx should also reject the promise
-	- `resolveWithFullResponse` which is a boolean to set whether the promise should be resolve with the full response or just the response body
+	- `simple = true` which is a boolean to set whether status codes other than 2xx should also reject the promise
+	- `resolveWithFullResponse = false` which is a boolean to set whether the promise should be resolved with the full response or just the response body
 	- `transform` which takes a function to transform the response into a custom value with which the promise is resolved
 
 The objects returned by request calls like `rp(...)` or e.g. `rp.post(...)` are regular Promises/A+ compliant promises and can be assimilated by any compatible promise library.
