@@ -1,0 +1,20 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "globals": {
+    "expect": true
+  },
+  "rules": {
+
+    // Variables
+
+    "no-undefined": 0,
+
+    // Node.js and CommonJS
+
+    "no-process-env": 0,
+    "no-sync": 0
+
+  }
+}

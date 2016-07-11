@@ -2,25 +2,24 @@
 
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
-var jshint = require('gulp-jshint');
-var jshintStylish = require('jshint-stylish');
 var istanbul = require('gulp-istanbul');
 var mocha = require('gulp-mocha');
 var chalk = require('chalk');
 var rimraf = require('rimraf');
 var coveralls = require('gulp-coveralls');
+var eslint = require('gulp-eslint');
+var _ = require('lodash');
 
-var chai = require("chai");
-chai.use(require("chai-as-promised"));
+var chai = require('chai');
 global.expect = chai.expect;
 
 
 var paths = {
-    libJsFiles: './lib/**/*.js',
-    gulpfile: './gulpfile.js',
+    libJsFiles: ['./lib/**/*.js', './errors.js'],
     specFiles: './test/spec/**/*.js',
     fixtureFiles: './test/fixtures/**/*.js',
-    jshintrc: './.jshintrc'
+    gulpfile: './gulpfile.js',
+    eslintrc: './.eslintrc.json'
 };
 
 
@@ -28,14 +27,19 @@ gulp.task('dev', ['watch', 'validate']);
 
 gulp.task('watch', function () {
 
-    return gulp.watch([
+    gulp.watch(_.flatten([
         paths.libJsFiles,
-        paths.gulpfile,
         paths.specFiles,
         paths.fixtureFiles,
-        paths.jshintrc
-    ], [
+        paths.gulpfile
+    ]), [
         'validate'
+    ]);
+
+    gulp.watch(_.flatten([
+        paths.eslintrc
+    ]), [
+        'lint'
     ]);
 
 });
@@ -46,10 +50,16 @@ gulp.task('validate', function (done) {
 
 gulp.task('lint', function () {
 
-    return gulp.src([paths.libJsFiles, paths.gulpfile, paths.specFiles, paths.fixtureFiles])
-        .pipe(jshint())
-        .pipe(jshint.reporter(jshintStylish))
-        .pipe(jshint.reporter('fail'));
+    return gulp.src(_.flatten([
+        paths.libJsFiles,
+        paths.gulpfile,
+        paths.specFiles,
+        paths.fixtureFiles,
+        paths.gulpfile
+    ]))
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 
 });
 
@@ -91,7 +101,9 @@ gulp.task('test-without-coverage', function () {
 
 });
 
-gulp.task('clean', function (done) {
+gulp.task('clean', ['clean-coverage']);
+
+gulp.task('clean-coverage', function (done) {
     rimraf('./coverage', done);
 });
 
@@ -100,7 +112,7 @@ gulp.task('ci', function (done) {
 });
 
 gulp.task('ci-no-cov', function (done) {
-    runSequence('lint', 'test-without-coverage', done);
+    runSequence('validate', 'test-without-coverage', done);
 });
 
 gulp.task('coveralls', function () {

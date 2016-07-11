@@ -1,20 +1,18 @@
 <a href="http://promisesaplus.com/">
-    <img src="https://promises-aplus.github.io/promises-spec/assets/logo-small.png"
-         align="right" valign="top" alt="Promises/A+ logo" />
+    <img src="https://promises-aplus.github.io/promises-spec/assets/logo-small.png" align="right" alt="Promises/A+ logo" />
 </a>
 
 # Request-Promise
 
 [![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/request/request-promise?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [![Build Status](https://img.shields.io/travis/request/request-promise/master.svg?style=flat-square)](https://travis-ci.org/request/request-promise)
 [![Coverage Status](https://img.shields.io/coveralls/request/request-promise.svg?style=flat-square)](https://coveralls.io/r/request/request-promise)
-[![Dependency Status](https://img.shields.io/david/request/request-promise.svg?style=flat-square)](https://david-dm.org/request/request-promise)
+[![Dependency Status](https://img.shields.io/gemnasium/request/request-promise.svg?style=flat-square)](https://gemnasium.com/github.com/request/request-promise)
 [![Known Vulnerabilities](https://snyk.io/test/npm/request-promise/badge.svg?style=flat-square)](https://snyk.io/test/npm/request-promise)
 
-The world-famous HTTP client "Request" now Promises/A+ compliant. Powered by Bluebird.
+The simplified HTTP request client 'request' with Promise support. Powered by Bluebird.
 
-[Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/mikeal/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
+[Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/request/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
 
 ---
 
