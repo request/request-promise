@@ -148,4 +148,12 @@ describe('Request-Promise', function () {
 
     });
 
+    it('should inform about the dropped CLS support', function () {
+
+        expect(function () {
+            rp.bindCLS();
+        }).to.throw();
+
+    });
+
 });
