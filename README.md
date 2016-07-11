@@ -571,6 +571,13 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.0.0 (upcoming)
+    - **Breaking Change**: `request` is declared as a peer dependency which has to be installed separately by the user now
+    - **Breaking Change**: Dropped support for Continuation Local Storage since [`request-promise-any`](https://github.com/request/request-promise-any) can be used for that now
+    - Introduced the `transform2xxOnly` option to ease the breaking change regarding the new `transform` handling in v3.0.0
+      *(Thanks to @stevage for pointing out the effect of the breaking change in [issue #131](https://github.com/request/request-promise/issues/131))*
+    - Resolved issues [#65](https://github.com/request/request-promise/issues/65) and [#71](https://github.com/request/request-promise/issues/71) by publishing nearly identical libraries to support other Promise implementations: [`request-promise-native`](https://github.com/request/request-promise-native) and [`request-promise-any`](https://github.com/request/request-promise-any)
+      *(Thanks to @benjamingr, @eilgin, @gillesdemey, @hildjj, @iggycoloma, @jonathanong, @knpwrs, @MarkHerhold, @massimocode, @mikeal, @niftylettuce, @raitucarp, @sherdeadlock, @tonylukasavage, and @vgoloviznin for the valuable discussions!)*
 - v3.0.0 (2016-04-16)
     - **Breaking Change**: Overhauled the handling of the `transform` function
       *(Thanks to @Limess for explaining the need in [issue #86](https://github.com/request/request-promise/issues/86))*
