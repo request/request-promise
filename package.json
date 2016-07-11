@@ -31,6 +31,7 @@
   "dependencies": {
     "@request/api": "^0.6.0",
     "@request/client": "^0.1.0",
+    "@request/promise-core": "^1.0.0-rc.1",
     "bluebird": "^3.3",
     "lodash": "^4.6.1"
   },

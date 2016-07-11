@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('../promise-core/errors');
+module.exports = require('@request/promise-core/errors');

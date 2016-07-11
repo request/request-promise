@@ -115,6 +115,7 @@ describe('Request-Promise', function () {
                 simple: true,
                 resolveWithFullResponse: false,
                 transform: undefined,
+                transform2xxOnly: false,
                 end: true
             };
 
