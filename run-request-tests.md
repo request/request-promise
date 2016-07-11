@@ -1,6 +1,6 @@
 # How to run the tests of Requests for Request-Promise
 
-Request-Promise aims to be almost identical to Request. Therefore most tests for Request should also be green executed on Request-Promise.
+Request-Promise aims to be almost identical to Request. Therefore most tests for Request should also be green executed against Request-Promise.
 
 This is how to run the tests:
 
@@ -27,4 +27,4 @@ module.exports = require('../request-promise/lib/rp.js')
 8. Add `var request = require('../../request/index-orig.js');` right below.
 9. Go to temp/request/ and run `npm test`.
 
-Currently, only those tests fail that expect a request call to throw an exceptions. Request-Promise rejects the promise those errors.
+Currently, only those tests fail that expect a request call to throw an exceptions. Request-Promise rejects the promise for those errors instead.
