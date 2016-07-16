@@ -12,9 +12,19 @@
 
 The simplified HTTP request client 'request' with Promise support. Powered by Bluebird.
 
-[Bluebird](https://github.com/petkaantonov/bluebird) and [Request](https://github.com/request/request) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple` to `false`.
+[Request](https://github.com/request/request) and [Bluebird](https://github.com/petkaantonov/bluebird) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple = false`.
+
+Also check out the new libraries that are **very similar to `request-promise` v4**:
+- [`request-promise-native`](https://github.com/request/request-promise-native) v1 &ndash; Does not depend on Bluebird and uses native ES6 promises instead.
+- [`request-promise-any`](https://github.com/request/request-promise-any) v1 &ndash; Allows you to register any Promise library supported by [`any-promise`](https://www.npmjs.com/package/any-promise).
 
 ---
+
+## Migration from v3 to v4
+
+1. `request` became a peer dependency. Thus make sure that `request` is installed into your project as a direct dependency. (`npm install --save request`)
+2. Continuation Local Storage is no longer supported. However, you [can get back the support](https://github.com/request/request-promise/wiki/Getting-Back-Support-for-Continuation-Local-Storage) by using `request-promise-any`.
+3. When you migrated your `transform` function to v3 and had to add `if (!(/^2/.test('' + response.statusCode))) { return resolveWithFullResponse ? response : body; }` you may now set the option `transform2xxOnly = true` instead.
 
 ## Migration from v2 to v3
 
@@ -30,11 +40,12 @@ The simplified HTTP request client 'request' with Promise support. Powered by Bl
 
 This module is installed via npm:
 
-``` bash
-npm install request-promise
+```
+npm install --save request
+npm install --save request-promise
 ```
 
-Request-Promise depends on loosely defined versions of Request and Bluebird. If you want to use specific versions of those modules please install them beforehand.
+`request` is defined as a peer-dependency and thus has to be installed separately.
 
 ## Cheat Sheet
 
@@ -204,6 +215,7 @@ Consider Request-Promise being:
 	- `simple = true` which is a boolean to set whether status codes other than 2xx should also reject the promise
 	- `resolveWithFullResponse = false` which is a boolean to set whether the promise should be resolved with the full response or just the response body
 	- `transform` which takes a function to transform the response into a custom value with which the promise is resolved
+	- `transform2xxOnly = false` which is a boolean to set whether the transform function is applied to all responses or only to those with a 2xx status code
 
 The objects returned by request calls like `rp(...)` or e.g. `rp.post(...)` are regular Promises/A+ compliant promises and can be assimilated by any compatible promise library.
 
@@ -461,6 +473,8 @@ rp(options)
     });
 ```
 
+You may set `options.transform2xxOnly = true` to only execute the transform function for responses with a 2xx status code. For other status codes &ndash; independent of any other settings, e.g. `options.simple` &ndash; the transform function is not executed.
+
 #### Error handling
 
 If the transform operation fails (throws an error) the request will be rejected with a `TransformError`:
@@ -484,27 +498,7 @@ rp(options)
 
 ## Experimental Support for Continuation Local Storage
 
-Continuation Local Storage (CLS) is a great mechanism for backpacking data along asynchronous call chains that is best explained in [these slides](http://fredkschott.com/post/2014/02/conquering-asynchronous-context-with-cls/). If you want to use CLS you need to install the [continuation-local-storage package](https://www.npmjs.com/package/continuation-local-storage) and the [cls-bluebird package](https://www.npmjs.com/package/cls-bluebird).
-
-Just call `rp.bindCLS(ns)` **ONCE** before your first request to activate CLS:
-``` js
-var rp = require('request-promise');
-var cls = require('continuation-local-storage');
-
-var ns = cls.createNamespace('testNS');
-rp.bindCLS(ns);
-
-ns.run(function () {
-    ns.set('value', 'hi');
-
-    rp('http://google.com')
-        .then(function () {
-            console.log(ns.get('value')); // -> hi
-        });
-});
-```
-
-Since the [cls-bluebird package](https://www.npmjs.com/package/cls-bluebird) currently is just a quick and dirty implementation the CLS support is only experimental.
+Continuation Local Storage is no longer supported. However, you [can get back the support](https://github.com/request/request-promise/wiki/Getting-Back-Support-for-Continuation-Local-Storage) by using `request-promise-any`.
 
 ## Debugging
 
@@ -639,6 +633,8 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 - v0.3.0 (2014-11-10)
 	- Carefully rewritten from scratch to make Request-Promise a drop-in replacement for Request
 
-## MIT Licensed
+## License (ISC)
+
+In case you never heard about the [ISC license](http://en.wikipedia.org/wiki/ISC_license) it is functionally equivalent to the MIT license.
 
 See the [LICENSE file](LICENSE) for details.
