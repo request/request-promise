@@ -7,10 +7,6 @@
   },
   "rules": {
 
-    // Variables
-
-    "no-undefined": 0,
-
     // Node.js and CommonJS
 
     "no-process-env": 0,
