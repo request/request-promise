@@ -565,6 +565,8 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.0.1 (2016-07-17)
+    - Fixed `@request/promise-core` version for safer versioning
 - v4.0.0 (2016-07-15)
     - **Breaking Change**: `request` is declared as a peer dependency which has to be installed separately by the user now
     - **Breaking Change**: Dropped support for Continuation Local Storage since [`request-promise-any`](https://github.com/request/request-promise-any) can be [used](https://github.com/request/request-promise/wiki/Getting-Back-Support-for-Continuation-Local-Storage) for that now
