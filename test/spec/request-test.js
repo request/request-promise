@@ -88,16 +88,23 @@ describe('Request-Promise', function () {
         });
 
         it('.cancel() cancelling the Bluebird promise and aborting the request', function (done) {
+
             var req = rp('http://localhost:4000/503');
             req.once('abort', done);
+
             req.cancel();
+
         });
 
         it('.cancel() on promises chained from the Bluebird promise, aborting the request', function (done) {
+
             var req = rp('http://localhost:4000/503');
             req.once('abort', done);
+
             req.then(function noop() { }).cancel();
+
         });
+
     });
 
     describe('should still allow to require Request independently', function () {
@@ -169,6 +176,21 @@ describe('Request-Promise', function () {
         expect(function () {
             rp.bindCLS();
         }).to.throw();
+
+    });
+
+    it('should not resolve the promise if .abort() is used', function (done) {
+
+        var request = rp('http://localhost:4000/200');
+
+        request.promise()
+            .finally(function () {
+                done(new Error('The promise should not be resolved'));
+            });
+
+        request.abort();
+
+        setTimeout(done, 100);
 
     });
 
