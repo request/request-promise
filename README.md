@@ -213,6 +213,7 @@ Consider Request-Promise being:
 	- `rp(...).then(...)` or e.g. `rp.post(...).then(...)` which turn `rp(...)` and `rp.post(...)` into promises
 	- `rp(...).catch(...)` or e.g. `rp.del(...).catch(...)` which is the same method as provided by Bluebird promises
 	- `rp(...).finally(...)` or e.g. `rp.put(...).finally(...)` which is the same method as provided by Bluebird promises
+	- `rp(...).cancel()` or e.g. `rp.get(...).cancel()` which cancels the request
 	- `rp(...).promise()` or e.g. `rp.head(...).promise()` which returns the underlying promise so you can access the full [Bluebird API](https://github.com/petkaantonov/bluebird/blob/master/API.md)
 - Plus some additional options:
 	- `simple = true` which is a boolean to set whether status codes other than 2xx should also reject the promise
@@ -285,6 +286,15 @@ rp('http://google.com')
 	    // This is called after the request finishes either successful or not successful.
 	});
 ```
+
+### .cancel()
+
+This method cancels the request using [Bluebird's cancellation feature](http://bluebirdjs.com/docs/api/cancellation.html).
+
+When `.cancel()` is called:
+
+- the promise will neither be resolved nor rejected and
+- the request is [aborted](https://nodejs.org/dist/latest-v6.x/docs/api/http.html#http_request_abort).
 
 ### .promise() - For advanced use cases
 
@@ -568,6 +578,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.1.0 (2016-07-30)
+    - Added cancellation support
+      *(Thanks to @not-an-aardvark for [pull request #123](https://github.com/request/request-promise/pull/123))*
 - v4.0.2 (2016-07-18)
     - Fix for using with module bundlers like Webpack and Browserify
 - v4.0.1 (2016-07-17)
