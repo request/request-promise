@@ -1,7 +1,6 @@
 'use strict';
 
-var Bluebird = require('bluebird'),
-    childProcess = require('child_process'),
+var childProcess = require('child_process'),
     errors = require('../../errors'),
     path = require('path'),
     rp = require('../../'),
@@ -78,10 +77,27 @@ describe('Request-Promise', function () {
 
             var p = rp('http://localhost:4000/200').promise();
 
-            expect(p instanceof Bluebird).to.eql(true);
+            // This will not actually be an instanceof Bluebird since request-promise creates a new Bluebird copy.
+            // Instead, verify that the Promise contains the bluebird functions.
+            expect(p.constructor.name).to.equal('Promise');
+            expect(p.then).to.be.a('function');
+            expect(p.delay).to.be.a('function');
+            expect(p.map).to.be.a('function');
+            expect(p.cancel).to.be.a('function');
 
         });
 
+        it('.cancel() cancelling the Bluebird promise and aborting the request', function (done) {
+            var req = rp('http://localhost:4000/503');
+            req.once('abort', done);
+            req.cancel();
+        });
+
+        it('.cancel() on promises chained from the Bluebird promise, aborting the request', function (done) {
+            var req = rp('http://localhost:4000/503');
+            req.once('abort', done);
+            req.then(function noop() { }).cancel();
+        });
     });
 
     describe('should still allow to require Request independently', function () {

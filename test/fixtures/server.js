@@ -19,6 +19,9 @@ module.exports = function startServer(port, cb) {
                     res.writeHead(301, { Location: '/200' });
                     res.end();
                     break;
+                case 503:
+                    // Send no response at all
+                    break;
                 default:
                     res.writeHead(status, {'Content-Type': 'text/plain'});
                     var body = req.method === 'POST' ? ' - ' + JSON.stringify(req.body) : '';
