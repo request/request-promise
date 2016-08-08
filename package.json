@@ -1,6 +1,6 @@
 {
   "name": "request-promise",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "The simplified HTTP request client 'request' with Promise support. Powered by Bluebird.",
   "keywords": [
     "xhr",
@@ -33,7 +33,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "@request/promise-core": "1.1.0",
+    "request-promise-core": "1.1.1",
     "bluebird": "^3.4.1",
     "stealthy-require": "^1.0.0"
   },

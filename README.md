@@ -23,9 +23,8 @@ Also check out the new libraries that are **very similar to `request-promise` v4
 ## Migration from v3 to v4
 
 1. `request` became a peer dependency. Thus make sure that `request` is installed into your project as a direct dependency. (`npm install --save request`)
-2. **Note for NPM proxy users:** `request-promise` depends on `@request/promise-core` and downloading such [scoped packages](https://www.npmjs.org/doc/misc/npm-scope.html) seems to be a bit of a challenge for NPM proxies like [`sinopia`](https://github.com/rlidwka/sinopia) or [Artifactory](https://www.jfrog.com/artifactory/). If your `npm install` results in a 404 please read [this issue](https://github.com/request/request-promise/issues/137).
-3. Continuation Local Storage is no longer supported. However, you [can get back the support](https://github.com/request/request-promise/wiki/Getting-Back-Support-for-Continuation-Local-Storage) by using `request-promise-any`.
-4. When you migrated your `transform` function to v3 and had to add `if (!(/^2/.test('' + response.statusCode))) { return resolveWithFullResponse ? response : body; }` you may now set the option `transform2xxOnly = true` instead.
+2. Continuation Local Storage is no longer supported. However, you [can get back the support](https://github.com/request/request-promise/wiki/Getting-Back-Support-for-Continuation-Local-Storage) by using `request-promise-any`.
+3. When you migrated your `transform` function to v3 and had to add `if (!(/^2/.test('' + response.statusCode))) { return resolveWithFullResponse ? response : body; }` you may now set the option `transform2xxOnly = true` instead.
 
 ## Migration from v2 to v3
 
@@ -47,8 +46,6 @@ npm install --save request-promise
 ```
 
 `request` is defined as a peer-dependency and thus has to be installed separately.
-
-**Note for NPM proxy users:** `request-promise` depends on `@request/promise-core` and downloading such [scoped packages](https://www.npmjs.org/doc/misc/npm-scope.html) seems to be a bit of a challenge for NPM proxies like [`sinopia`](https://github.com/rlidwka/sinopia) or [Artifactory](https://www.jfrog.com/artifactory/). If your `npm install` results in a 404 please read [this issue](https://github.com/request/request-promise/issues/137).
 
 ## Cheat Sheet
 
@@ -578,6 +575,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.1.1 (2016-08-08)
+    - Renamed internally used package `@request/promise-core` to `request-promise-core` because there where [too](https://github.com/request/request-promise/issues/137) [many](https://github.com/request/request-promise/issues/141) issues with the scoped package name
+      *(Thanks to @cabrinoob, @crazy4groovy, @dsandor, @KpjComp, @lorenwest, @Reisyukaku, @tehChromic, @todd for providing helpful information.)*
 - v4.1.0 (2016-07-30)
     - Added cancellation support
       *(Thanks to @not-an-aardvark for [pull request #123](https://github.com/request/request-promise/pull/123))*
