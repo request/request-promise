@@ -53,6 +53,8 @@ npm install --save request-promise
 var rp = require('request-promise');
 ```
 
+Since `request-promise` wraps around `request` everything that works with `request` also works with `request-promise`. Also check out the [`request` docs](https://github.com/request/request) for more examples.
+
 ### Crawl a webpage
 
 ``` js
