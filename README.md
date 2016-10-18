@@ -429,10 +429,9 @@ rp(options)
 var $ = require('cheerio'); // Basically jQuery for node.js
 
 function autoParse(body, response, resolveWithFullResponse) {
-    // FIXME: The content type string could contain additional values like the charset.
-    if (response.headers['content-type'] === 'application/json') {
+    if (response.headers['content-type'].includes('application/json')) {
         return JSON.parse(body);
-    } else if (response.headers['content-type'] === 'text/html') {
+    } else if (response.headers['content-type'].includes('text/html')) {
         return $.load(body);
     } else {
         return body;
