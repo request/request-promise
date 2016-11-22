@@ -503,7 +503,7 @@ var options = {
 };
 
 rp(options)
-    .catch(errors.TransformError, function (reason) {
+    .catch(function (reason) {
         console.log(reason.cause.message); // => Transform failed!
         // reason.response is the original response for which the transform operation failed
     });
