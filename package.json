@@ -34,11 +34,11 @@
   },
   "dependencies": {
     "request-promise-core": "1.1.1",
-    "bluebird": "^3.4.1",
     "stealthy-require": "^1.0.0"
   },
   "peerDependencies": {
-    "request": "^2.34"
+    "request": "^2.34",
+    "bluebird": ">=3.4.1"
   },
   "devDependencies": {
     "body-parser": "~1.15.2",
