@@ -578,6 +578,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.2.0 (2017-03-16)
+    - Updated `bluebird` to v3.5
+      *(Thanks to @acinader for [pull request #181](https://github.com/request/request-promise/pull/181))*
 - v4.1.1 (2016-08-08)
     - Renamed internally used package `@request/promise-core` to `request-promise-core` because there where [too](https://github.com/request/request-promise/issues/137) [many](https://github.com/request/request-promise/issues/141) issues with the scoped package name
       *(Thanks to @cabrinoob, @crazy4groovy, @dsandor, @KpjComp, @lorenwest, @Reisyukaku, @tehChromic, @todd for providing helpful information.)*
