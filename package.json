@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "request-promise-core": "1.1.1",
-    "bluebird": "^3.4.1",
+    "bluebird": "^3.5.0",
     "stealthy-require": "^1.0.0"
   },
   "peerDependencies": {
