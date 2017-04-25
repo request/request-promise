@@ -4,6 +4,7 @@ var childProcess = require('child_process'),
     errors = require('../../errors'),
     path = require('path'),
     rp = require('../../'),
+    tough = require('tough-cookie'),
     startServer = require('../fixtures/server.js');
 
 
@@ -191,6 +192,24 @@ describe('Request-Promise', function () {
         request.abort();
 
         setTimeout(done, 100);
+
+    });
+
+    it('should allow the use of tough-cookie - issue #183', function () {
+
+        var sessionCookie = new tough.Cookie({
+            key: 'some_key',
+            value: 'some_value',
+            domain: 'api.mydomain.com',
+            httpOnly: true,
+            maxAge: 31536000
+        });
+
+        var cookiejar = rp.jar();
+
+        expect(function () {
+            cookiejar.setCookie(sessionCookie, 'https://api.mydomain.com');
+        }).to.not.throw();
 
     });
 
