@@ -105,6 +105,16 @@ describe('Request-Promise', function () {
             req.then(function noop() { }).cancel();
 
         });
+        it('.reflect() on  promise', function (done) {
+            rp('http://localhost:4000/200').reflect()
+              .then(function (inspection) {
+                  expect(inspection.constructor.name).to.equal('PromiseInspection');
+                  done();
+              })
+              .catch(function (err) {
+                  done(err);
+              });
+        });
 
     });
 
