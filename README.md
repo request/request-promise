@@ -611,6 +611,11 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.2.1 (2017-05-07)
+    - Fix that allows to use `tough-cookie` for cookie creation
+      *(Thanks to @ScottyMJacobson for reporting [issue #183](https://github.com/request/request-promise/issues/183))*
+    - Added [cookie handling example](https://github.com/request/request-promise#include-a-cookie) to the cheat sheet
+      *(Thanks to @chovy and @ProfessorTom for [asking for it](https://github.com/request/request-promise/issues/79))*
 - v4.2.0 (2017-03-16)
     - Updated `bluebird` to v3.5
       *(Thanks to @acinader for [pull request #181](https://github.com/request/request-promise/pull/181))*
