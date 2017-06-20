@@ -50,7 +50,7 @@ npm install --save request-promise
 ## Cheat Sheet
 
 ``` js
-var rp = require('request-promise');
+const rp = require('request-promise');
 ```
 
 Since `request-promise` wraps around `request` everything that works with `request` also works with `request-promise`. Also check out the [`request` docs](https://github.com/request/request) for more examples.
@@ -70,9 +70,9 @@ rp('http://www.google.com')
 ### Crawl a webpage better
 
 ``` js
-var cheerio = require('cheerio'); // Basically jQuery for node.js
+const cheerio = require('cheerio'); // Basically jQuery for node.js
 
-var options = {
+const options = {
     uri: 'http://www.google.com',
     transform: function (body) {
         return cheerio.load(body);
@@ -91,7 +91,7 @@ rp(options)
 ### GET something from a JSON REST API
 
 ``` js
-var options = {
+const options = {
     uri: 'https://api.github.com/user/repos',
     qs: {
         access_token: 'xxxxx xxxxx' // -> uri + '?access_token=xxxxx%20xxxxx'
@@ -116,7 +116,7 @@ rp(options)
 Set `option.body` to your data and `json: true` to encode the body as JSON. See below for HTML forms.
 
 ``` js
-var options = {
+const options = {
     method: 'POST',
     uri: 'http://api.posttestserver.com/post',
     body: {
@@ -139,7 +139,7 @@ rp(options)
 Set `option.form` to your data to encode the body the same way as HTML forms do.
 
 ``` js
-var options = {
+const options = {
     method: 'POST',
     uri: 'http://posttestserver.com/post.php',
     form: {
@@ -162,7 +162,7 @@ rp(options)
 ### Include a cookie
 
 ``` js
-var tough = require('tough-cookie');
+const tough = require('tough-cookie');
 
 // Easy creation of the cookie - see tough-cookie docs for details
 let cookie = new tough.Cookie({
@@ -178,7 +178,7 @@ var cookiejar = rp.jar();
 cookiejar.setCookie(cookie, 'https://api.mydomain.com');
 // ...all requests to https://api.mydomain.com will include the cookie
 
-var options = {
+const options = {
     uri: 'https://api.mydomain.com/...',
     jar: cookiejar // Tells rp to include cookies in jar that match uri
 };
@@ -195,7 +195,7 @@ rp(options)
 ### Get the full response instead of just the body
 
 ``` js
-var options = {
+const options = {
     method: 'DELETE',
     uri: 'http://my-server/path/to/resource/1234',
     resolveWithFullResponse: true    //  <---  <---  <---  <---
@@ -213,7 +213,7 @@ rp(options)
 ### Get a rejection only if the request failed for technical reasons
 
 ``` js
-var options = {
+const options = {
     uri: 'http://www.google.com/this-page-does-not-exist.html',
     simple: false    //  <---  <---  <---  <---
 };
@@ -261,7 +261,7 @@ The methods `.then(...)`, `.catch(...)`, and `.finally(...)` - which you can cal
 
 ``` js
 // As a Request user you would write:
-var request = require('request');
+const request = require('request');
 
 request('http://google.com', function (err, response, body) {
     if (err) {
@@ -274,7 +274,7 @@ request('http://google.com', function (err, response, body) {
 });
 
 // As a Request-Promise user you can now write the equivalent code:
-var rp = require('request-promise');
+const rp = require('request-promise');
 
 rp('http://google.com')
     .then(process, handleError);
@@ -375,7 +375,7 @@ rp('http://google.com')
 	});
 
 // ... and would be equivalent to this Request-only implementation:
-var options = { uri: 'http://google.com' };
+const options = { uri: 'http://google.com' };
 
 request(options, function (err, response, body) {
     var reason;
@@ -426,7 +426,7 @@ request(options, function (err, response, body) {
 With version 0.4 the reason objects became Error objects with identical properties to ensure backwards compatibility. These new Error types allow targeted catch blocks:
 
 ``` js
-var errors = require('request-promise/errors');
+const errors = require('request-promise/errors');
 
 rp('http://google.com')
 	.catch(errors.StatusCodeError, function (reason) {
@@ -445,7 +445,7 @@ You can pass a function to `options.transform` to generate a custom fulfillment 
 
 ``` js
 // Just for fun you could reverse the response body:
-var options = {
+const options = {
 	uri: 'http://google.com',
     transform: function (body, response, resolveWithFullResponse) {
         return body.split('').reverse().join('');
@@ -459,7 +459,7 @@ rp(options)
 
 
 // However, you could also do something useful:
-var $ = require('cheerio'); // Basically jQuery for node.js
+const $ = require('cheerio'); // Basically jQuery for node.js
 
 function autoParse(body, response, resolveWithFullResponse) {
     // FIXME: The content type string could contain additional values like the charset.
@@ -528,7 +528,7 @@ If the transform operation fails (throws an error) the request will be rejected 
 ``` js
 var errors = require('request-promise/errors');
 
-var options = {
+const options = {
 	uri: 'http://google.com',
     transform: function (body, response, resolveWithFullResponse) {
         throw new Error('Transform failed!');
@@ -562,7 +562,7 @@ Usually you want to mock the whole request function which is returned by `requir
 ```javascript
 before(function (done) {
 
-    var filename = "fileForResponse";
+    const filename = "fileForResponse";
     mockery.enable({
         warnOnReplace: false,
         warnOnUnregistered: false,
