@@ -136,14 +136,21 @@ rp(options)
 
 ### POST like HTML forms do
 
-Set `option.form` to your data to encode the body the same way as HTML forms do.
+Set `option.formData` to your data to encode the body the same way as HTML forms do.
 
 ``` js
 var options = {
     method: 'POST',
     uri: 'http://posttestserver.com/post.php',
-    form: {
-        some: 'payload' // Will be urlencoded
+    formData: {
+		name: 'test.jpg',
+		file: {
+			value: fs.createReadStream('test/test.jpg'),
+			options: {
+				filename: 'test.jpg',
+				contentType: 'image/jpg'
+			}
+		}
     },
     headers: {
         /* 'content-type': 'application/x-www-form-urlencoded' */ // Is set automatically
