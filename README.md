@@ -143,7 +143,9 @@ var options = {
     method: 'POST',
     uri: 'http://posttestserver.com/post.php',
     formData: {
+        // Like <input type="text" name="name">
 		name: 'test.jpg',
+        // Like <input type="file" name="file">
 		file: {
 			value: fs.createReadStream('test/test.jpg'),
 			options: {
