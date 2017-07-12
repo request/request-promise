@@ -41,6 +41,24 @@ describe('Request-Promise', function () {
                 });
 
         });
+        it('.tap(...)', function (done) {
+            var tapWasCalled = false;
+            rp('http://localhost:4000/200')
+                .tap(function (body) {
+                    expect(body).to.eql('GET /200');
+                    tapWasCalled = true;
+                    return;
+                })
+                .then(function (body) {
+                    expect(body).to.eql('GET /200');
+                    expect(tapWasCalled).to.eql(true);
+                    done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+
+        });
 
         it('.catch(...) and the error types', function (done) {
 
