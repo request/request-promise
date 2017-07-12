@@ -144,15 +144,15 @@ var options = {
     uri: 'http://posttestserver.com/post.php',
     formData: {
         // Like <input type="text" name="name">
-		name: 'test.jpg',
+        name: 'test.jpg',
         // Like <input type="file" name="file">
-		file: {
-			value: fs.createReadStream('test/test.jpg'),
-			options: {
-				filename: 'test.jpg',
-				contentType: 'image/jpg'
-			}
-		}
+        file: {
+            value: fs.createReadStream('test/test.jpg'),
+            options: {
+                filename: 'test.jpg',
+                contentType: 'image/jpg'
+            }
+        }
     },
     headers: {
         /* 'content-type': 'application/x-www-form-urlencoded' */ // Is set automatically
