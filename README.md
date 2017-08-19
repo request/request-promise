@@ -136,7 +136,7 @@ rp(options)
 
 ### POST like HTML forms do
 
-Set `option.formData` to your data to encode the body the same way as HTML forms do.
+Set `options.formData` to your data to encode the body the same way as HTML forms do.
 
 ``` js
 var options = {
