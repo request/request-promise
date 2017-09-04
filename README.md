@@ -155,7 +155,7 @@ var options = {
         }
     },
     headers: {
-        /* 'content-type': 'application/x-www-form-urlencoded' */ // Is set automatically
+        /* 'content-type': 'multipart/form-data' */ // Is set automatically
     }
 };
 
