@@ -136,13 +136,13 @@ rp(options)
 
 ### POST like HTML forms do
 
-Set `options.formData` to your data to encode the body the same way as HTML forms do.
+Set `options.form` to your data to encode the body the same way as HTML forms do.
 
 ``` js
 var options = {
     method: 'POST',
     uri: 'http://posttestserver.com/post.php',
-    formData: {
+    form: {
         // Like <input type="text" name="name">
         name: 'test.jpg',
         // Like <input type="file" name="file">
