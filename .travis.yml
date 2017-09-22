@@ -15,4 +15,5 @@ matrix:
     env: V_REQUEST=latest
 
 before_install:
+  - npm install tough-cookie
   - npm install request@$V_REQUEST
