@@ -620,6 +620,9 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.2.2 (2017-09-22)
+    - Upgraded `tough-cookie` to a version without regex DoS vulnerability
+      *(Thanks to @rouanw for [pull request #226](https://github.com/request/request-promise/pull/226))*
 - v4.2.1 (2017-05-07)
     - Fix that allows to use `tough-cookie` for cookie creation
       *(Thanks to @ScottyMJacobson for reporting [issue #183](https://github.com/request/request-promise/issues/183))*
