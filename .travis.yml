@@ -15,4 +15,4 @@ matrix:
     env: V_REQUEST=latest
 
 before_install:
-  - npm install request@V_REQUEST
+  - npm install request@$V_REQUEST
