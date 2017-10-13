@@ -136,7 +136,31 @@ rp(options)
 
 ### POST like HTML forms do
 
-Set `options.formData` to your data to encode the body the same way as HTML forms do.
+Pass your data to `options.form` to encode the body the same way as HTML forms do:
+
+``` js
+var options = {
+    method: 'POST',
+    uri: 'http://posttestserver.com/post.php',
+    form: {
+        // Like <input type="text" name="name">
+        name: 'Josh'
+    },
+    headers: {
+        /* 'content-type': 'application/x-www-form-urlencoded' */ // Is set automatically
+    }
+};
+
+rp(options)
+    .then(function (body) {
+        // POST succeeded...
+    })
+    .catch(function (err) {
+        // POST failed...
+    });
+```
+
+If you want to include a file upload then use `options.formData`:
 
 ``` js
 var options = {
@@ -144,7 +168,7 @@ var options = {
     uri: 'http://posttestserver.com/post.php',
     formData: {
         // Like <input type="text" name="name">
-        name: 'test.jpg',
+        name: 'Jenn',
         // Like <input type="file" name="file">
         file: {
             value: fs.createReadStream('test/test.jpg'),
