@@ -589,9 +589,16 @@ The ways to debug the operation of Request-Promise are the same [as described](h
 
 ## Mocking Request-Promise
 
-Usually you want to mock the whole request function which is returned by `require('request-promise')`. This is not possible by using a mocking library like [sinon.js](http://sinonjs.org) alone. What you need is a library that ties into the module loader and makes sure that your mock is returned whenever the tested code is calling `require('request-promise')`. [Mockery](https://github.com/mfncooper/mockery) is one of such libraries.
+#### Sinon
+
+One way to stub `request-promise` is to use [sinon.js](http://sinonjs.org) to stub its methods, such as `sinon.stub(rp, 'get')`.
+However, sinon won't stub the import itself, i.e. the `rp()` function, returned by `require('request-promise')`.
+In order to do that, you can use a library such as [Mockery](https://github.com/mfncooper/mockery), which intercepts `require` calls in your application.
+
+#### Mockery
 
 @florianschmidt1994 kindly shared his solution:
+
 ```javascript
 before(function (done) {
 
@@ -626,7 +633,24 @@ describe('custom test case', function () {
 });
 ```
 
-Based on that you may now build a more sophisticated mock. [Sinon.js](http://sinonjs.org) may be of help as well.
+Based on that you may now build a more sophisticated mock.
+
+#### Nock
+
+An alternative approach to mocking `rp()` function, or its methods, is to mock HTTP responses. One great library to aid with that is [Nock](https://github.com/node-nock/nock).
+
+```javascript
+afterEach(() => {
+    nock.cleanAll();
+});
+
+beforeEach(() => {
+    nock('/api')
+       .get(`/user`)
+       .reply(200, {results: []});
+});
+```
+This will allow your code to receive a fake HTTP response.
 
 ## Contributing
 
