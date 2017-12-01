@@ -54,6 +54,10 @@
     "publish-please": "~2.1.4",
     "request": "^2.34.0",
     "rimraf": "~2.5.3",
-    "run-sequence": "~1.2.2"
+    "run-sequence": "~1.2.2",
+    "os":"~0.1.1",
+    "net":"~1.0.2",
+    "url":"~0.11.0"
+    
   }
 }
