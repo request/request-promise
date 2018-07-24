@@ -208,7 +208,7 @@ let cookie = new tough.Cookie({
 
 // Put cookie in an jar which can be used across multiple requests
 var cookiejar = rp.jar();
-cookiejar.setCookie(cookie, 'https://api.mydomain.com');
+cookiejar.setCookie(cookie.toString(), 'https://api.mydomain.com');
 // ...all requests to https://api.mydomain.com will include the cookie
 
 var options = {
