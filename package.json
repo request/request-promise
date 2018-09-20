@@ -35,6 +35,7 @@
   "dependencies": {
     "request-promise-core": "1.1.1",
     "bluebird": "^3.5.0",
+    "request": "^2.34.0",
     "stealthy-require": "^1.1.0",
     "tough-cookie": ">=2.3.3"
   },
@@ -52,7 +53,6 @@
     "gulp-mocha": "~2.2.0",
     "lodash": "~4.13.1",
     "publish-please": "~2.1.4",
-    "request": "^2.34.0",
     "rimraf": "~2.5.3",
     "run-sequence": "~1.2.2"
   }
