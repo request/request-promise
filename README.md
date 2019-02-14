@@ -277,6 +277,7 @@ Consider Request-Promise being:
 - Plus some methods on a request call object:
 	- `rp(...).then(...)` or e.g. `rp.post(...).then(...)` which turn `rp(...)` and `rp.post(...)` into promises
 	- `rp(...).catch(...)` or e.g. `rp.del(...).catch(...)` which is the same method as provided by Bluebird promises
+	    - Errors that the `request` library would pass to the callback are wrapped by `request-promise` and then passed to the catch handler. See [code example](https://github.com/request/request-promise#thenonfulfilled-onrejected) below. 
 	- `rp(...).finally(...)` or e.g. `rp.put(...).finally(...)` which is the same method as provided by Bluebird promises
 	- `rp(...).cancel()` or e.g. `rp.get(...).cancel()` which cancels the request
 	- `rp(...).promise()` or e.g. `rp.head(...).promise()` which returns the underlying promise so you can access the full [Bluebird API](https://github.com/petkaantonov/bluebird/blob/master/API.md)

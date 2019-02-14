@@ -13,6 +13,10 @@ matrix:
     env: V_REQUEST=latest
   - node_js: "6"
     env: V_REQUEST=latest
+  - node_js: "8"
+    env: V_REQUEST=latest
+  - node_js: "10"
+    env: V_REQUEST=latest
 
 before_install:
   - npm install tough-cookie
