@@ -21,3 +21,5 @@ matrix:
 before_install:
   - npm install tough-cookie
   - npm install request@$V_REQUEST
+
+install: npm install
