@@ -33,7 +33,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "request-promise-core": "1.1.2",
+    "request-promise-core": "^1.1.1",
     "bluebird": "^3.5.0",
     "stealthy-require": "^1.1.1",
     "tough-cookie": "^2.3.3"
