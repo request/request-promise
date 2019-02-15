@@ -645,6 +645,10 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.2.4 (2019-02-14)
+    - Corrected mistakenly set `tough-cookie` version, now `^2.3.3`
+      *(Thanks to @evocateur for pointing this out.)*
+    - If you installed `request-promise@4.2.3` please make sure after the upgrade that `request` and `request-promise` use the same physical copy of `tough-cookie`.
 - v4.2.3 (2019-02-14)
     - Using stricter `tough-cookie@~2.3.3` to avoid installing `tough-cookie@3` which introduces breaking changes
       *(Thanks to @aomdoa for pull request [#299](https://github.com/request/request-promise/pull/299))*
