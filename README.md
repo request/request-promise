@@ -22,7 +22,7 @@ Also check out the new libraries that are **very similar to `request-promise` v4
 
 ## Migration from v3 to v4
 
-1. `request` became a peer dependency. Thus make sure that `request` is installed into your project as a direct dependency. (`npm install --save request`)
+1. `request` became a peer dependency. Thus make sure that `request` is installed into your project as a direct dependency. (`npm install request`)
 2. Continuation Local Storage is no longer supported. However, you [can get back the support](https://github.com/request/request-promise/wiki/Getting-Back-Support-for-Continuation-Local-Storage) by using `request-promise-any`.
 3. When you migrated your `transform` function to v3 and had to add `if (!(/^2/.test('' + response.statusCode))) { return resolveWithFullResponse ? response : body; }` you may now set the option `transform2xxOnly = true` instead.
 
