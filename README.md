@@ -192,6 +192,22 @@ rp(options)
     });
 ```
 
+### Get a file
+
+Note: if you expect binary data, you should set encoding: null
+
+``` js
+var fsPromises = require('fs').promises;
+rp('https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png', { encoding: null })
+    .then(function (data) {
+        // GET succeeded...
+        return fsPromises.writeFile(`./googlelogo_color_92x30dp.png`, data)
+    })
+    .catch(function (err) {
+        // GET failed...
+    });
+```
+
 ### Include a cookie
 
 ``` js
