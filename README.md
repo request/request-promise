@@ -88,6 +88,21 @@ rp(options)
     });
 ```
 
+### Using async/await
+
+Since `async/await` is a wrapper around `promises`, you can use `async/await` with `request-promise`
+
+``` js
+async function crawlWebpage () {
+  try {
+    const htmlString = await rp('http://www.google.com')
+    // Process html...
+  } catch (err) {
+    // Crawling failed...
+  }
+}
+```
+
 ### GET something from a JSON REST API
 
 ``` js
