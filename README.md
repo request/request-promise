@@ -10,6 +10,13 @@
 [![Dependency Status](https://img.shields.io/david/request/request-promise.svg?style=flat-square&maxAge=2592000)](https://david-dm.org/request/request-promise)
 [![Known Vulnerabilities](https://snyk.io/test/npm/request-promise/badge.svg?style=flat-square&maxAge=2592000)](https://snyk.io/test/npm/request-promise)
 
+# Deprecated!
+
+As of Feb 11th 2020, [`request`](https://github.com/request/request) is fully deprecated. No new changes are expected to land. In fact, none have landed for some time.  
+This package is also deprecated because it depends on `request`.
+
+---
+
 The simplified HTTP request client 'request' with Promise support. Powered by Bluebird.
 
 [Request](https://github.com/request/request) and [Bluebird](https://github.com/petkaantonov/bluebird) are pretty awesome, but I found myself using the same design pattern. Request-Promise adds a Bluebird-powered `.then(...)` method to Request call objects. By default, http response codes other than 2xx will cause the promise to be rejected. This can be overwritten by setting `options.simple = false`.
