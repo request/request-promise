@@ -1,7 +1,7 @@
 {
-  "name": "request-promise",
+  "name": "@cypress/request-promise",
   "version": "4.2.5",
-  "description": "The simplified HTTP request client 'request' with Promise support. Powered by Bluebird.",
+  "description": "Cypress's fork of the simplified HTTP request client 'request' with Promise support. Powered by Bluebird.",
   "keywords": [
     "xhr",
     "http",
