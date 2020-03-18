@@ -21,14 +21,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/request/request-promise.git"
+    "url": "git+https://github.com/cypress-io/request-promise.git"
   },
   "author": "Nicolai Kamenzky (https://github.com/analog-nico)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/request/request-promise/issues"
+    "url": "https://github.com/cypress-io/request-promise/issues"
   },
-  "homepage": "https://github.com/request/request-promise#readme",
+  "homepage": "https://github.com/cypress-io/request-promise#readme",
   "engines": {
     "node": ">=0.10.0"
   },
