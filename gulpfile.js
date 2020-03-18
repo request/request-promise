@@ -108,7 +108,7 @@ gulp.task('clean-coverage', function (done) {
 });
 
 gulp.task('ci', function (done) {
-    runSequence('validate', 'coveralls', 'test-without-coverage', done);
+    runSequence('validate', /*'coveralls',*/ 'test-without-coverage', done);
 });
 
 gulp.task('ci-no-cov', function (done) {
