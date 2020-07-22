@@ -653,6 +653,8 @@ If you want to debug a test you should use `gulp test-without-coverage` to run a
 
 ## Change History
 
+- v4.2.6 (2020-07-21)
+    - Security fix: bumped `request-promise-core` which bumps `lodash` to `^4.17.19` following [this advisory](https://www.npmjs.com/advisories/1523).
 - v4.2.5 (2019-11-03)
     - Security fix: bumped `request-promise-core` which bumps `lodash` to `^4.17.15`. See [vulnerabilty reports](https://snyk.io/vuln/search?q=lodash&type=npm).
       *(Thanks to @rishabh-chowdhary for reporting this in pull request [#326](https://github.com/request/request-promise/pull/326).)*
